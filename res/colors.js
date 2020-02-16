@@ -28,5 +28,6 @@ const colors = {
   lightGray: '#a9aeb2',
   secondaryDark: '#747474',
   text: '#777777',
+  chatCard: '#DCF8C6',
 };
 export default colors;

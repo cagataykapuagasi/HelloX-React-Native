@@ -8,29 +8,68 @@ class chatStore {
   @observable
   messages = [];
 
-  init = async () => {
-    const { token, user } = userStore.user;
+  @observable
+  rooms = {};
 
+  init = async () => {
+    console.log('chat init');
+    const { token, user } = userStore.user;
     socket = await io.connect('http://localhost:3000', {
       query: {
         token,
       },
     });
 
-    //socket.emit(user.id, 'connected');
-    //console.log(user.id);
-    socket.on(user.id, text => {
-      console.log('gelen', text);
-      const newMessage = { text, type: 'received' };
-      this.messages.push(newMessage);
+    socket.on('new message', ({ senderId, recipientId, ...other }) => {
+      this.addNewMessage({
+        type: 'received',
+        recipientId: senderId,
+        ...other,
+      });
     });
   };
 
-  sendMessage = (id, text) => {
+  sendMessage = (recipientId, message) => {
     const { token, user } = userStore.user;
-    const newMessage = { text, type: 'sent', id };
-    this.messages.push(newMessage);
-    socket.emit(user.id, newMessage);
+    const newMessage = {
+      message,
+      recipientId,
+      senderId: user.id,
+    };
+    socket.emit('new message', newMessage);
+    this.addNewMessage({ type: 'sent', ...newMessage });
+  };
+
+  @action
+  addNewMessage = ({ recipientId, message, type }) => {
+    const { rooms } = this;
+    const roomId = recipientId;
+    let room = rooms[roomId];
+
+    const newMessage = {
+      message,
+      type,
+    };
+
+    if (room) {
+      room.messages.push(newMessage);
+    } else {
+      room = { messages: [] };
+      room.messages.push(newMessage);
+    }
+    rooms[roomId] = room;
+  };
+
+  getRoom = id => {
+    const roomId = id;
+    let room = this.rooms[roomId];
+
+    if (room) {
+      return this.rooms[roomId].messages;
+    }
+    room = { messages: [] };
+    this.rooms[roomId] = room;
+    return this.rooms[roomId].messages;
   };
 }
 

@@ -21,7 +21,7 @@ export default class Chat extends Component {
   componentDidMount() {
     const { init } = this.props.store.chat;
 
-    init();
+    //init();
   }
 
   sendMessage = () => {
@@ -35,13 +35,15 @@ export default class Chat extends Component {
       state: { message },
     } = this;
 
+    this.setState({ message: null });
+
     sendMessage(id, message);
   };
 
-  renderItem = ({ item: { name } }) => {
+  renderItem = ({ item: { type, message } }) => {
     return (
-      <View style={styles.card}>
-        <Text>{name}</Text>
+      <View style={styles[type === 'sent' ? 'sent' : 'received']}>
+        <Text>{message}</Text>
       </View>
     );
   };
@@ -52,8 +54,10 @@ export default class Chat extends Component {
     const {
       props: {
         store: {
-          chat: { messages },
+          chat: { rooms, getRoom },
+          user: { user },
         },
+        item: { id },
       },
       state: { message },
     } = this;
@@ -62,11 +66,11 @@ export default class Chat extends Component {
       <View style={styles.container}>
         <FlatList
           inverted
-          data={toJS(messages).reverse()}
+          data={toJS(getRoom(id)).reverse()}
           renderItem={this.renderItem}
-          style={styles.container}
           style={styles.flatlist}
           keyExtractor={this.keyExtractor}
+          ListHeaderComponent={<View style={{ height: 10 }} />}
         />
 
         <View style={styles.footer}>
@@ -75,7 +79,6 @@ export default class Chat extends Component {
             onChangeText={message => this.setState({ message })}
             style={styles.input}
             placeholder="Bir Mesaj Yaz"
-            placeholderTextColor="#d4d4d4"
           />
           <TouchableOpacity
             style={styles.footerButton}
@@ -88,6 +91,21 @@ export default class Chat extends Component {
   }
 }
 
+const card = {
+  marginTop: '10@s',
+  borderRadius: '8@s',
+  padding: '10@s',
+  shadowOffset: {
+    width: 0,
+    height: 0,
+  },
+  shadowColor: colors.text,
+  shadowRadius: 0.3,
+  shadowOpacity: 1,
+  elevation: 1,
+  maxWidth: '90%',
+};
+
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
@@ -97,11 +115,11 @@ const styles = ScaledSheet.create({
     alignItems: 'center',
     paddingLeft: '5@s',
     paddingRight: '10@s',
-    paddingBottom: '5@s',
+    paddingVertical: '5@s',
   },
   footerButton: {
-    height: 50,
-    width: 50,
+    height: '45@s',
+    width: '45@s',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#128C7E',
@@ -111,14 +129,15 @@ const styles = ScaledSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#128C7E',
+    height: '45@s',
     flex: 1,
-    height: 50,
     borderRadius: 25,
     paddingHorizontal: 20,
+    fontSize: '14@s',
     //color: 'white',
   },
   buttonText: {
-    color: 'white',
+    color: colors.background,
     fontWeight: 'bold',
     fontSize: '12@s',
   },
@@ -127,14 +146,21 @@ const styles = ScaledSheet.create({
     backgroundColor: '#128C7E',
   },
   flatlist: {
-    marginBottom: 5,
+    //paddingBottom: 5,
     flex: 1,
     //backgroundColor: 'yellow',
+    paddingBottom: 45,
   },
-  card: {
-    height: 50,
-    borderWidth: 1,
-    marginTop: 5,
+  sent: {
+    ...card,
+    marginRight: '10@s',
+    backgroundColor: colors.chatCard,
+    alignSelf: 'flex-end',
+  },
+  received: {
+    ...card,
     marginLeft: '10@s',
+    backgroundColor: colors.background,
+    alignSelf: 'flex-start',
   },
 });

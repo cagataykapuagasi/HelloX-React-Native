@@ -11,9 +11,14 @@ export class RootStore {
   @observable
   chat = chat;
 
-  @action init = () => {
-    return user.init();
-  };
+  @action init = () =>
+    user
+      .init()
+      .then(() => {
+        chat.init();
+        return Promise.resolve();
+      })
+      .catch(() => Promise.reject());
 }
 
 export const store = new RootStore();
