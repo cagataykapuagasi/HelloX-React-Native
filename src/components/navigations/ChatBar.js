@@ -16,12 +16,7 @@ const ChatBar = props => {
     <SafeAreaView style={styles.container}>
       <View style={styles.box1}>
         <TouchableOpacity onPress={Actions.pop} style={styles.button}>
-          <Icon
-            type="antdesign"
-            name="caretleft"
-            color="white"
-            size={25}
-          />
+          <Icon type="antdesign" name="left" color="white" size={25} />
         </TouchableOpacity>
         <Image source={images.user} style={styles.picture} />
         <Text style={styles.name}>{props.item.username}</Text>

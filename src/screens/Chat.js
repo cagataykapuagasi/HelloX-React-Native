@@ -10,6 +10,7 @@ import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { toJS } from 'mobx';
+import Icon from '~/components/Icon';
 
 @inject('store')
 @observer
@@ -83,7 +84,12 @@ export default class Chat extends Component {
           <TouchableOpacity
             style={styles.footerButton}
             onPress={this.sendMessage}>
-            <Text style={styles.buttonText}>Send</Text>
+            <Icon
+              type="material"
+              name="send"
+              size={20}
+              color={colors.background}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -109,6 +115,7 @@ const card = {
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.chatBackground,
   },
   footer: {
     flexDirection: 'row',
@@ -123,18 +130,19 @@ const styles = ScaledSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#128C7E',
-    borderRadius: 25,
+    borderRadius: '22.5@s',
     left: '5@s',
+    paddingLeft: '2@s',
   },
   input: {
     borderWidth: 1,
     borderColor: '#128C7E',
     height: '45@s',
     flex: 1,
-    borderRadius: 25,
+    borderRadius: '22.5@s',
     paddingHorizontal: 20,
     fontSize: '14@s',
-    //color: 'white',
+    backgroundColor: colors.background,
   },
   buttonText: {
     color: colors.background,

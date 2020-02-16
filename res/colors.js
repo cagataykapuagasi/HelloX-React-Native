@@ -29,5 +29,6 @@ const colors = {
   secondaryDark: '#747474',
   text: '#777777',
   chatCard: '#DCF8C6',
+  chatBackground: '#ECE5DD',
 };
 export default colors;
