@@ -1,18 +1,17 @@
 import { observable, action } from 'mobx';
 import io from 'socket.io-client/dist/socket.io';
 import { user as userStore } from './userStore';
+import AsyncStorage from '@react-native-community/async-storage';
 
 let socket = null;
 
 class chatStore {
   @observable
-  messages = [];
-
-  @observable
   rooms = {};
 
   init = async () => {
     console.log('chat init');
+    await this.loadRooms();
     const { token, user } = userStore.user;
     socket = await io.connect('http://localhost:3000', {
       query: {
@@ -27,6 +26,13 @@ class chatStore {
         ...other,
       });
     });
+  };
+
+  loadRooms = async () => {
+    const rooms = JSON.parse(await AsyncStorage.getItem('rooms'));
+    if (rooms) {
+      this.rooms = rooms;
+    }
   };
 
   sendMessage = (recipientId, message) => {
@@ -58,6 +64,8 @@ class chatStore {
       room.messages.push(newMessage);
     }
     rooms[roomId] = room;
+
+    AsyncStorage.setItem('rooms', JSON.stringify(rooms));
   };
 
   getRoom = id => {
