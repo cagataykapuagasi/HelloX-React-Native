@@ -29,23 +29,18 @@ export function request(method, path, params = {}, customHeaders = {}) {
     if (response.ok) {
       return Promise.resolve(response.data);
     } else {
-      const { message, title, ...others } = response.data;
-      // if (violations) {
-      //   return Promise.reject({
-      //     error: message || title,
-      //     errors: mapWithKeys(violations, violation => {
-      //       return [violation.propertyPath, violation.message];
-      //     }),
-      //     ...others,
-      //     status: response.status,
-      //   });
-      // }
-      return Promise.reject({
-        error: message,
-        errors: [],
-        ...others,
-        status: response.status,
-      });
+      if (response.data) {
+        const { message, ...others } = response.data;
+
+        return Promise.reject({
+          error: message,
+          errors: [],
+          ...others,
+          status: response.status,
+        });
+      } else {
+        return Promise.reject(response);
+      }
     }
   });
 }

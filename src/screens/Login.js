@@ -33,12 +33,14 @@ export default class Login extends Component {
           autoCapitalize="none"
           onChangeText={username => this.setState({ username })}
           style={{ borderWidth: 1, height: 50, width: 250 }}
+          placeholder="username"
         />
         <TextInput
           value={password}
           autoCapitalize="none"
           onChangeText={password => this.setState({ password })}
           style={{ borderWidth: 1, height: 50, width: 250, marginTop: 20 }}
+          placeholder="password"
         />
 
         <TouchableOpacity onPress={this.login}>

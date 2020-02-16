@@ -9,6 +9,7 @@ import {
 import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
+import { toJS } from 'mobx';
 
 @inject('store')
 @observer
@@ -17,15 +18,24 @@ export default class Chat extends Component {
     message: null,
   };
 
-  login = () => {
+  componentDidMount() {
+    const { init } = this.props.store.chat;
+
+    init();
+  }
+
+  sendMessage = () => {
     const {
-      state: { username, password },
       props: {
-        store: { user },
+        store: {
+          chat: { sendMessage },
+        },
+        item: { id },
       },
+      state: { message },
     } = this;
 
-    user.login({ username, password });
+    sendMessage(id, message);
   };
 
   renderItem = ({ item: { name } }) => {
@@ -35,6 +45,8 @@ export default class Chat extends Component {
       </View>
     );
   };
+
+  keyExtractor = (item, index) => 'id' + index;
 
   render() {
     const {
@@ -48,30 +60,13 @@ export default class Chat extends Component {
 
     return (
       <View style={styles.container}>
-        {/* <View style={styles.header}>
-          <Text>John</Text>
-        </View> */}
         <FlatList
           inverted
-          data={[
-            { name: 'lale' },
-            { name: 'lale2' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-          ].reverse()}
+          data={toJS(messages).reverse()}
           renderItem={this.renderItem}
           style={styles.container}
           style={styles.flatlist}
+          keyExtractor={this.keyExtractor}
         />
 
         <View style={styles.footer}>
@@ -84,7 +79,7 @@ export default class Chat extends Component {
           />
           <TouchableOpacity
             style={styles.footerButton}
-            onPress={this.login}>
+            onPress={this.sendMessage}>
             <Text style={styles.buttonText}>Send</Text>
           </TouchableOpacity>
         </View>
@@ -120,7 +115,7 @@ const styles = ScaledSheet.create({
     height: 50,
     borderRadius: 25,
     paddingHorizontal: 20,
-    color: 'white',
+    //color: 'white',
   },
   buttonText: {
     color: 'white',
@@ -134,12 +129,12 @@ const styles = ScaledSheet.create({
   flatlist: {
     marginBottom: 5,
     flex: 1,
-    backgroundColor: 'yellow',
+    //backgroundColor: 'yellow',
   },
   card: {
     height: 50,
     borderWidth: 1,
     marginTop: 5,
-    marginLeft: 5,
+    marginLeft: '10@s',
   },
 });

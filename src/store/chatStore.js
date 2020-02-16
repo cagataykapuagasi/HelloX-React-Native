@@ -1,28 +1,36 @@
 import { observable, action } from 'mobx';
 import io from 'socket.io-client/dist/socket.io';
+import { user as userStore } from './userStore';
+
+let socket = null;
 
 class chatStore {
   @observable
   messages = [];
 
   init = async () => {
-    console.log('chat init');
-    const socket = await io.connect('http://localhost:3000', {
+    const { token, user } = userStore.user;
+
+    socket = await io.connect('http://localhost:3000', {
       query: {
-        token:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI1ZTNjMjJiZWFjZWQ5NjQ3NjQ1YjlmZWIiLCJpYXQiOjE1ODA5OTkzNTh9.l7YWtI5Fr478DO-Z0L1terNZ3JDt_qh6UIQlW2JKVhc',
+        token,
       },
     });
 
-    socket.on('chat message', socket => {
-      console.log('Socket connected!', socket);
-
-      //this.socket.join('lale', msg => console.log('2.', msg));
-
-      //test.broadcast.emit('chat message', { test: 'test' });
+    //socket.emit(user.id, 'connected');
+    //console.log(user.id);
+    socket.on(user.id, text => {
+      console.log('gelen', text);
+      const newMessage = { text, type: 'received' };
+      this.messages.push(newMessage);
     });
+  };
 
-    socket.on('lale', test => console.log('test', test));
+  sendMessage = (id, text) => {
+    const { token, user } = userStore.user;
+    const newMessage = { text, type: 'sent', id };
+    this.messages.push(newMessage);
+    socket.emit(user.id, newMessage);
   };
 }
 

@@ -45,6 +45,8 @@ export default class Chats extends Component {
     );
   };
 
+  keyExtractor = (item, index) => 'id' + index;
+
   render() {
     const {
       props: {
@@ -80,6 +82,7 @@ export default class Chats extends Component {
           renderItem={this.renderItem}
           style={styles.container}
           style={styles.flatlist}
+          keyExtractor={this.keyExtractor}
           ListFooterComponent={<View style={styles.footer} />}
         />
       </View>

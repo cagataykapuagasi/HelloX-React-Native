@@ -41,16 +41,12 @@ export default class App extends Component {
             titleStyle={styles.title}
             tintColor={colors.headerTint}
             headerTintColor={colors.headerTint}>
-            <Stack key="root">
+            <Stack hideNavBar key="root">
               <Scene hideNavBar component={Login} initial key="login" />
               <Tabs
-                //activeBackgroundColor="red"
-                //inactiveBackgroundColor="red"
                 indicatorStyle={{ backgroundColor: 'white' }}
                 labelStyle={{ fontWeight: 'bold' }}
-                //activeTintColor="red"
                 tabBarStyle={styles.tab}
-                //showLabel={false}
                 tabBarPosition="top"
                 hideNavBar
                 key="home">
@@ -66,7 +62,9 @@ export default class App extends Component {
                 />
               </Tabs>
 
-              <Scene key="chat" navBar={ChatBar} component={Chat} />
+              <Stack navBar={ChatBar} key="chat">
+                <Scene component={Chat} />
+              </Stack>
             </Stack>
           </Router>
         </Provider>

@@ -12,7 +12,6 @@ import { images, fonts, colors } from 'res';
 import { Actions } from 'react-native-router-flux';
 
 const ChatBar = props => {
-  console.warn(props);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.box1}>
@@ -25,7 +24,7 @@ const ChatBar = props => {
           />
         </TouchableOpacity>
         <Image source={images.user} style={styles.picture} />
-        <Text style={styles.name}>John</Text>
+        <Text style={styles.name}>{props.item.username}</Text>
       </View>
       <TouchableOpacity>
         <Icon
