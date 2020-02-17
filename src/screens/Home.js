@@ -7,11 +7,12 @@ import {
   FlatList,
   Image,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
-import { Icon } from '~/components';
+import { Icon, SearchBar } from '~/components';
 import { User } from '~/api';
 import { Actions } from 'react-native-router-flux';
 
@@ -22,20 +23,41 @@ const { width } = Dimensions.get('window');
 export default class Home extends Component {
   state = {
     users: null,
-    loading: true,
+    loading: false,
+    random: null,
   };
 
-  componentDidMount() {
-    this.onRefresh();
+  async componentDidMount() {
+    this.getRandomUser();
   }
 
-  onRefresh = async () => {
-    const users = await User.getUsers();
+  getRandomUser = async () => {
+    const random = await User.getRandomUser();
 
+    if (random) {
+      this.setState({
+        random,
+      });
+    }
+  };
+
+  openRandomUser = () => {
+    const { random } = this.state;
+    const { user } = random;
+
+    Actions.chat({ item: user, getRandomUser: this.getRandomUser });
     this.setState({
-      users,
-      loading: false,
+      random: null,
     });
+  };
+
+  searchUser = text => {
+    if (!text.length) {
+      this.setState({ loading: false });
+      return;
+    }
+
+    this.setState({ loading: true });
   };
 
   renderItem = ({ item }) => {
@@ -55,6 +77,22 @@ export default class Home extends Component {
     );
   };
 
+  ListFooterComponent = () => (
+    <View style={styles.footer}>
+      {this.state.loading && (
+        <ActivityIndicator style={styles.indicator} />
+      )}
+    </View>
+  );
+
+  ListHeaderComponent = () => (
+    <SearchBar
+      openRandomUser={this.openRandomUser}
+      random={this.state.random}
+      onChangeText={this.searchUser}
+    />
+  );
+
   keyExtractor = (item, index) => 'id' + index;
 
   render() {
@@ -70,14 +108,13 @@ export default class Home extends Component {
         <FlatList
           data={users}
           renderItem={this.renderItem}
-          style={styles.container}
           style={styles.flatlist}
           keyExtractor={this.keyExtractor}
-          refreshing={loading}
-          onRefresh={this.onRefresh}
-          numColumns={2}
-          columnWrapperStyle={styles.columnWrapperStyle}
-          ListFooterComponent={<View style={styles.footer} />}
+          //numColumns={2}
+          //columnWrapperStyle={styles.columnWrapperStyle}
+          ListFooterComponent={this.ListFooterComponent}
+          ListHeaderComponent={this.ListHeaderComponent}
+          extraData={this.state}
         />
       </View>
     );
@@ -91,11 +128,10 @@ const styles = ScaledSheet.create({
   input: {
     borderWidth: 1,
     borderColor: '#128C7E',
-    flex: 1,
-    height: 50,
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    color: 'white',
+    height: '50@s',
+    borderRadius: '10@s',
+    paddingHorizontal: '20@s',
+    marginTop: '5@s',
   },
   flatlist: {
     flex: 1,
@@ -140,5 +176,8 @@ const styles = ScaledSheet.create({
     backgroundColor: '#25D366',
     position: 'absolute',
     top: '35@s',
+  },
+  indicator: {
+    top: '5@s',
   },
 });

@@ -26,6 +26,7 @@
     "react-native-reanimated": "^1.7.0",
     "react-native-router-flux": "^4.2.0",
     "react-native-size-matters": "^0.2.1",
+    "react-native-textinput-effects": "^0.5.1",
     "react-native-vector-icons": "^6.6.0",
     "socket.io-client": "2.1.1"
   },

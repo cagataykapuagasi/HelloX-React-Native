@@ -3,6 +3,7 @@ import { Auth } from '../api';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { setToken } from '../api/Client';
+import { chat } from './chatStore';
 
 class UserStore {
   @observable user = { user: null, token: null };
@@ -34,6 +35,7 @@ class UserStore {
     this.user.user = user;
     this.user.token = token;
     setToken(token);
+    await chat.init();
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
 

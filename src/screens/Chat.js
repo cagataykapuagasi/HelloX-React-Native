@@ -20,9 +20,15 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    const { init } = this.props.store.chat;
+    const { item } = this.props;
 
     //init();
+  }
+
+  componentWillUnmount() {
+    const { getRandomUser } = this.props;
+
+    getRandomUser();
   }
 
   sendMessage = () => {
