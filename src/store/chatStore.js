@@ -8,6 +8,8 @@ let socket = null;
 class chatStore {
   @observable
   rooms = {};
+  @observable
+  currentRecipient = null;
 
   init = async () => {
     console.log('chat init');
@@ -28,6 +30,13 @@ class chatStore {
     });
   };
 
+  setCurrentRecipient = user => (this.currentRecipient = user);
+
+  checkUserStatus = id => {
+    socket.emit('checkstatus', id);
+    socket.on('checkstatus', id => console.log(id));
+  };
+
   loadRooms = async () => {
     const rooms = JSON.parse(await AsyncStorage.getItem('rooms'));
     if (rooms) {
@@ -35,8 +44,8 @@ class chatStore {
     }
   };
 
-  sendMessage = (recipientId, message) => {
-    const { token, user } = userStore.user;
+  sendMessage = ({ recipientId, message }) => {
+    const { user } = userStore.user;
     const newMessage = {
       message,
       recipientId,
@@ -45,6 +54,9 @@ class chatStore {
     socket.emit('new message', newMessage);
     this.addNewMessage({ type: 'sent', ...newMessage });
   };
+
+  saveRooms = () =>
+    AsyncStorage.setItem('rooms', JSON.stringify(this.rooms));
 
   @action
   addNewMessage = ({ recipientId, message, type }) => {
@@ -55,6 +67,7 @@ class chatStore {
     const newMessage = {
       message,
       type,
+      //viewed: false,
     };
 
     if (room) {
@@ -63,11 +76,20 @@ class chatStore {
       room = { messages: [] };
       room.messages.push(newMessage);
     }
+    room.lastUpdate = Date.now();
     rooms[roomId] = room;
 
-    AsyncStorage.setItem('rooms', JSON.stringify(rooms));
+    this.saveRooms();
   };
 
+  @action
+  closeRoom = id => {
+    if (!this.rooms[id].messages.length) {
+      delete this.rooms[id];
+    }
+  };
+
+  @action
   getRoom = id => {
     const roomId = id;
     let room = this.rooms[roomId];
@@ -76,6 +98,9 @@ class chatStore {
       return this.rooms[roomId].messages;
     }
     room = { messages: [] };
+    if (!room.user) {
+      room.user = this.currentRecipient;
+    }
     this.rooms[roomId] = room;
     return this.rooms[roomId].messages;
   };

@@ -11,26 +11,31 @@ import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { Icon } from '~/components';
+import { toJS } from 'mobx';
+import { Actions } from 'react-native-router-flux';
 
 @inject('store')
 @observer
 export default class Chats extends Component {
-  state = {
-    message: null,
-  };
+  state = {};
 
-  renderItem = ({ item: { name } }) => {
+  renderItem = ({ item: { user, messages } }) => {
+    //console.log(item);
+    const length = messages.length;
+
     return (
-      <TouchableOpacity style={styles.card}>
+      <TouchableOpacity
+        onPress={() => Actions.chat({ item: user })}
+        style={styles.card}>
         <Image
           style={styles.photo}
           source={{ uri: 'https://picsum.photos/200/200' }}
         />
         <View style={styles.card2}>
           <View style={styles.card2_1}>
-            <Text style={styles.username}>{name}</Text>
+            <Text style={styles.username}>{user.username}</Text>
             <Text style={styles.message} numberOfLines={1}>
-              {'Selam :)Selam :)Selam :)Selam :)Selam :)Selam :)Selam :)'}
+              {length && messages[length - 1].message}
             </Text>
           </View>
 
@@ -51,34 +56,19 @@ export default class Chats extends Component {
     const {
       props: {
         store: {
-          chat: { messages },
+          chat: { rooms },
         },
       },
-      state: { message },
     } = this;
+
+    const _rooms = Object.values(toJS(rooms)).sort(
+      (a, b) => b.lastUpdate - a.lastUpdate
+    );
 
     return (
       <View style={styles.container}>
-        {/* <View style={styles.header}>
-          <Text>John</Text>
-        </View> */}
         <FlatList
-          data={[
-            { name: 'lale' },
-            { name: 'lale2' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-            { name: 'lale3' },
-          ]}
+          data={_rooms}
           renderItem={this.renderItem}
           style={styles.container}
           style={styles.flatlist}

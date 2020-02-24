@@ -30,5 +30,7 @@ const colors = {
   text: '#777777',
   chatCard: '#DCF8C6',
   chatBackground: '#ECE5DD',
+  online: '#25D366',
+  offline: 'red',
 };
 export default colors;

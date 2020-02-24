@@ -20,15 +20,28 @@ export default class Chat extends Component {
   };
 
   componentDidMount() {
-    const { item } = this.props;
+    const {
+      store: { chat },
+      item,
+    } = this.props;
 
-    //init();
+    chat.setCurrentRecipient(item);
+    console.log('chat', chat);
   }
 
   componentWillUnmount() {
-    const { getRandomUser } = this.props;
+    const {
+      getRandomUser,
+      store: {
+        chat: { closeRoom },
+      },
+      item: { id },
+    } = this.props;
 
-    getRandomUser();
+    closeRoom(id);
+    if (getRandomUser) {
+      getRandomUser();
+    }
   }
 
   sendMessage = () => {
@@ -42,9 +55,8 @@ export default class Chat extends Component {
       state: { message },
     } = this;
 
+    sendMessage({ recipientId: id, message });
     this.setState({ message: null });
-
-    sendMessage(id, message);
   };
 
   renderItem = ({ item: { type, message } }) => {
@@ -57,11 +69,13 @@ export default class Chat extends Component {
 
   keyExtractor = (item, index) => 'id' + index;
 
+  ListHeaderComponent = () => <View style={styles.listHeader} />;
+
   render() {
     const {
       props: {
         store: {
-          chat: { rooms, getRoom },
+          chat: { getRoom },
           user: { user },
         },
         item: { id },
@@ -77,7 +91,7 @@ export default class Chat extends Component {
           renderItem={this.renderItem}
           style={styles.flatlist}
           keyExtractor={this.keyExtractor}
-          ListHeaderComponent={<View style={{ height: 10 }} />}
+          ListHeaderComponent={this.ListHeaderComponent}
         />
 
         <View style={styles.footer}>
@@ -176,5 +190,8 @@ const styles = ScaledSheet.create({
     marginLeft: '10@s',
     backgroundColor: colors.background,
     alignSelf: 'flex-start',
+  },
+  listHeader: {
+    height: 10,
   },
 });

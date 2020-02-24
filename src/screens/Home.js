@@ -42,28 +42,44 @@ export default class Home extends Component {
   };
 
   openRandomUser = () => {
-    const { random } = this.state;
-    const { user } = random;
+    const {
+      state: { random },
+      getRandomUser,
+    } = this;
 
-    Actions.chat({ item: user, getRandomUser: this.getRandomUser });
+    Actions.chat({ item: random, getRandomUser });
     this.setState({
       random: null,
     });
   };
 
   searchUser = text => {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
     if (!text.length) {
-      this.setState({ loading: false });
+      this.setState({ loading: false, users: null });
       return;
     }
+    this.setState({ loading: true, users: null });
 
-    this.setState({ loading: true });
+    this.timeout = setTimeout(() => {
+      User.search(text)
+        .then(users => this.setState({ users, loading: false }))
+        .catch(e => console.log(e));
+    }, 500);
+  };
+
+  openChatScreen = item => {
+    const { getRandomUser } = this;
+
+    Actions.chat({ item, getRandomUser });
   };
 
   renderItem = ({ item }) => {
     return (
       <TouchableOpacity
-        onPress={() => Actions.chat({ item })}
+        onPress={() => this.openChatScreen(item)}
         style={styles.card}>
         <Image
           style={styles.photo}
@@ -71,7 +87,15 @@ export default class Home extends Component {
         />
         <View style={styles.usernameView}>
           <Text style={styles.username}>{item.username}</Text>
-          <View style={styles.online} />
+          <View
+            style={[
+              styles.online,
+              {
+                backgroundColor:
+                  colors[item.status ? 'online' : 'offline'],
+              },
+            ]}
+          />
         </View>
       </TouchableOpacity>
     );
@@ -93,6 +117,10 @@ export default class Home extends Component {
     />
   );
 
+  ListEmptyComponent = () => (
+    <Text style={styles.emptyText}>Kullanıcı bulunamadı.</Text>
+  );
+
   keyExtractor = (item, index) => 'id' + index;
 
   render() {
@@ -100,20 +128,20 @@ export default class Home extends Component {
       state: { users, loading },
     } = this;
 
+    console.log(users);
+
     return (
       <View style={styles.container}>
-        {/* <View style={styles.header}>
-          <Text>John</Text>
-        </View> */}
         <FlatList
           data={users}
           renderItem={this.renderItem}
           style={styles.flatlist}
           keyExtractor={this.keyExtractor}
-          //numColumns={2}
-          //columnWrapperStyle={styles.columnWrapperStyle}
+          numColumns={2}
+          columnWrapperStyle={styles.columnWrapperStyle}
           ListFooterComponent={this.ListFooterComponent}
           ListHeaderComponent={this.ListHeaderComponent}
+          ListEmptyComponent={!loading && users && this.ListEmptyComponent}
           extraData={this.state}
         />
       </View>
@@ -143,7 +171,7 @@ const styles = ScaledSheet.create({
     alignItems: 'center',
     borderRadius: '10@s',
     marginTop: '15@s',
-    backgroundColor: '#ECE5DD',
+    backgroundColor: '#d4d4d4',
   },
   photo: {
     height: '100@s',
@@ -173,11 +201,14 @@ const styles = ScaledSheet.create({
     height: '10@s',
     width: '10@s',
     borderRadius: '5@s',
-    backgroundColor: '#25D366',
     position: 'absolute',
     top: '35@s',
   },
   indicator: {
     top: '5@s',
+  },
+  emptyText: {
+    textAlign: 'center',
+    top: '10@s',
   },
 });

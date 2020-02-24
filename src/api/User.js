@@ -7,3 +7,7 @@ export function getRandomUser() {
 export function getUsers() {
   return request('get', 'user/all');
 }
+
+export function search(username) {
+  return request('post', 'user/search', { username: username });
+}
