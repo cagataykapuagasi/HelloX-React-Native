@@ -1,5 +1,6 @@
 import { user } from './userStore';
 import { chat } from './chatStore';
+import { nav } from './navStore';
 import { observable, action } from 'mobx';
 
 export class RootStore {
@@ -10,6 +11,9 @@ export class RootStore {
 
   @observable
   chat = chat;
+
+  @observable
+  nav = nav;
 
   @action init = () =>
     user

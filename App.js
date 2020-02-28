@@ -13,7 +13,7 @@ import { Home, Login, Chat, Chats } from './src/screens';
 import { colors } from 'res';
 import RNBootSplash from 'react-native-bootsplash';
 import { store } from './src/store';
-import { ChatBar, TabIcon } from './src/components/navigations';
+import { ChatBar, TabBar } from './src/components/navigations';
 
 export default class App extends Component {
   componentDidMount() {
@@ -37,6 +37,7 @@ export default class App extends Component {
         <StatusBar barStyle="light-content" />
         <Provider store={store}>
           <Router
+            onStateChange={store.nav.handleState}
             sceneStyle={styles.scene}
             titleStyle={styles.title}
             tintColor={colors.headerTint}
@@ -48,17 +49,20 @@ export default class App extends Component {
                 labelStyle={{ fontWeight: 'bold' }}
                 tabBarStyle={styles.tab}
                 tabBarPosition="top"
+                tabBarComponent={TabBar}
                 hideNavBar
                 key="home">
                 <Scene
                   hideNavBar
                   component={Home}
                   tabBarLabel="AnaSayfa"
+                  key="home_0"
                 />
                 <Scene
                   hideNavBar
                   component={Chats}
                   tabBarLabel="Sohbetler"
+                  key="home_1"
                 />
               </Tabs>
 
