@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -19,12 +19,16 @@ const tabWidth = width / tabs.length;
 const animatedBar = new Animated.Value(0);
 
 const TabBar = props => {
+  const { currentScreen } = props.store.nav;
+
+  useEffect(() => animate(), [currentScreen]);
+
   const navigate = key => {
     props.jumpTo(key);
   };
 
   const animate = key => {
-    const index = key.substr(-1);
+    const index = props.store.nav.currentScreen.substr(-1);
     const toValue = tabWidth * index;
 
     Animated.timing(animatedBar, {
@@ -34,14 +38,13 @@ const TabBar = props => {
     }).start();
   };
 
-  const { currentScreen } = props.store.nav;
-  animate(currentScreen);
+  const openSettings = () => props.store.user.logOut();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.head}>
         <View style={styles.settingsView}>
-          <TouchableOpacity style={styles.settings}>
+          <TouchableOpacity onPress={openSettings} style={styles.settings}>
             <Icon
               type="fontawesome"
               name="ellipsis-v"

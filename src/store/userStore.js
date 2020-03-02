@@ -1,4 +1,4 @@
-import { observable, action, computed } from 'mobx';
+import { observable, action } from 'mobx';
 import { Auth } from '../api';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -25,7 +25,7 @@ class UserStore {
     Auth.login(form)
       .then(res => {
         this.setUser(res);
-        Actions.replace('home');
+        Actions.home();
       })
       .catch(e => console.log(e));
   };
@@ -40,8 +40,11 @@ class UserStore {
   };
 
   @action
-  reset = () => {
-    this.user = null;
+  logOut = async () => {
+    await AsyncStorage.removeItem('user');
+    this.user.user = null;
+    this.user.token = null;
+    Actions.login();
   };
 }
 

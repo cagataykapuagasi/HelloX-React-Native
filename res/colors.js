@@ -32,5 +32,8 @@ const colors = {
   chatBackground: '#ECE5DD',
   online: '#25D366',
   offline: 'red',
+  button: ['#fc6b3b', '#f96331', '#f95a25'],
+  auth: ['#128C7E', '#128C7E', '#075E54'],
+  danger: '#cf283a',
 };
 export default colors;

@@ -20,7 +20,7 @@ export default class Chats extends Component {
   state = {};
 
   renderItem = ({ item: { user, messages } }) => {
-    //console.log(item);
+    console.log(user);
     const length = messages.length;
 
     return (
@@ -52,6 +52,12 @@ export default class Chats extends Component {
 
   keyExtractor = (item, index) => 'id' + index;
 
+  ListFooterComponent = () => <View style={styles.footer} />;
+
+  ListEmptyComponent = () => (
+    <Text style={styles.emptyText}>Henüz hiç mesajlaşma yok.</Text>
+  );
+
   render() {
     const {
       props: {
@@ -73,7 +79,8 @@ export default class Chats extends Component {
           style={styles.container}
           style={styles.flatlist}
           keyExtractor={this.keyExtractor}
-          ListFooterComponent={<View style={styles.footer} />}
+          ListFooterComponent={this.ListFooterComponent}
+          ListEmptyComponent={this.ListEmptyComponent}
         />
       </View>
     );
@@ -156,5 +163,9 @@ const styles = ScaledSheet.create({
   },
   card2_2: {
     alignItems: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    top: '10@s',
   },
 });

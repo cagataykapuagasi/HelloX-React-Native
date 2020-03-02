@@ -38,7 +38,7 @@ const SearchBar = props => {
     <View style={styles.container}>
       <Kohana
         style={styles.input}
-        label={'Search'}
+        label={'Find Users'}
         iconClass={FontAwesomeIcon}
         iconName={'search'}
         iconColor={colors.primary}

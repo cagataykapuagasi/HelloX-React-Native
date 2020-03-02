@@ -9,20 +9,31 @@ import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Auth } from '../api';
 import { Actions } from 'react-native-router-flux';
 import { Formik } from 'formik';
-import { loginSchema } from '~/utils/validationSchema';
+import { registerSchema } from '~/utils/validationSchema';
+import { handleRegisterErrors } from '~/utils/handleErrors';
 
-const initialValues = { username: '', password: '' };
+const initialValues = {
+  username: '',
+  email: '',
+  password: '',
+  password_confirmation: '',
+};
 
-const Login = props => {
-  const login = (form, { setErrors, setSubmitting }) => {
+//test@gmail.com
+
+const Register = props => {
+  const register = (
+    { password_confirmation, ...form },
+    { setErrors, setSubmitting }
+  ) => {
     const { setUser } = props.store.user;
-    Auth.login(form)
+    Auth.register(form)
       .then(res => {
         setUser(res);
         Actions.home();
       })
       .catch(({ error }) => {
-        setErrors(error);
+        setErrors(handleRegisterErrors(error));
         setSubmitting(false);
       });
   };
@@ -32,24 +43,23 @@ const Login = props => {
       <View style={styles.textContainer}>
         <Formik
           initialValues={initialValues}
-          onSubmit={login}
-          validationSchema={loginSchema}>
+          onSubmit={register}
+          validationSchema={registerSchema}>
           {({ handleSubmit, isSubmitting, isValid }) => (
             <Form style={styles.forms}>
               <TextInput name="username" label="username" />
+              <TextInput name="email" label="email" />
               <TextInput name="password" label="password" />
-
-              <View style={styles.register}>
-                <TouchableOpacity onPress={Actions.register}>
-                  <Text style={styles.registerText}>Register</Text>
-                </TouchableOpacity>
-              </View>
+              <TextInput
+                name="password_confirmation"
+                label="password again"
+              />
 
               <Button
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }}
                 colors={colors.button}
-                text="Login"
+                text="Register"
                 distance={50}
                 onPress={handleSubmit}
                 loading={isSubmitting}
@@ -63,7 +73,7 @@ const Login = props => {
   );
 };
 
-export default inject('store')(observer(Login));
+export default inject('store')(observer(Register));
 
 const styles = ScaledSheet.create({
   container: {
@@ -81,15 +91,5 @@ const styles = ScaledSheet.create({
   },
   textContainer: {
     paddingHorizontal: '20@s',
-  },
-  register: {
-    top: '5@s',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  registerText: {
-    fontSize: '11@s',
-    fontWeight: 'bold',
-    color: 'white',
   },
 });
