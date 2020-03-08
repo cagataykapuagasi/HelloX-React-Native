@@ -19,16 +19,6 @@ export default class Chat extends Component {
     message: null,
   };
 
-  componentDidMount() {
-    const {
-      store: { chat },
-      item,
-    } = this.props;
-
-    chat.setCurrentRecipient(item);
-    console.log('chat', chat);
-  }
-
   componentWillUnmount() {
     const {
       getRandomUser,
@@ -78,7 +68,7 @@ export default class Chat extends Component {
           chat: { getRoom },
           user: { user },
         },
-        item: { id },
+        item,
       },
       state: { message },
     } = this;
@@ -87,7 +77,7 @@ export default class Chat extends Component {
       <View style={styles.container}>
         <FlatList
           inverted
-          data={toJS(getRoom(id)).reverse()}
+          data={toJS(getRoom(item)).reverse()}
           renderItem={this.renderItem}
           style={styles.flatlist}
           keyExtractor={this.keyExtractor}

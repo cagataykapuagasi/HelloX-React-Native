@@ -1,9 +1,11 @@
 import { create } from 'apisauce';
+import { Platform } from 'react-native';
 
 let token = null;
-
+const ios = 'localhost';
+const android = '10.0.2.2';
 const client = create({
-  baseURL: 'http://localhost:3000',
+  baseURL: `http://${Platform.select({ ios, android })}:3000`,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',

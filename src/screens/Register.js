@@ -56,8 +56,7 @@ const Register = props => {
               />
 
               <Button
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                horizontal
                 colors={colors.button}
                 text="Register"
                 distance={50}

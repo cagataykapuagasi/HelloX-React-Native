@@ -9,11 +9,19 @@ import {
   Tabs,
 } from 'react-native-router-flux';
 import { Provider } from 'mobx-react';
-import { Home, Login, Chat, Chats, Register } from './src/screens';
+import {
+  Home,
+  Login,
+  Chat,
+  Chats,
+  Register,
+  Settings,
+} from './src/screens';
 import { colors } from 'res';
 import RNBootSplash from 'react-native-bootsplash';
 import { store } from './src/store';
-import { ChatBar, TabBar } from './src/components/navigations';
+import { ChatBar, TabBar, BackButton } from './src/components/navigations';
+import DropDown from '~/components/drowdown';
 
 export default class App extends Component {
   componentDidMount() {
@@ -36,59 +44,70 @@ export default class App extends Component {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <Provider store={store}>
-          <Router
-            onStateChange={store.nav.handleState}
-            sceneStyle={styles.scene}
-            titleStyle={styles.title}
-            tintColor={colors.headerTint}
-            navBarButtonColor={colors.background}
-            headerTintColor={colors.headerTint}>
-            <Stack hideNavBar key="root">
-              <Stack type="replace" key="login">
-                <Scene
-                  component={Login}
-                  initial
-                  navTransparent
-                  title="Login"
-                />
-              </Stack>
+          <View
+            onTouchStart={store.nav.hideDropDown}
+            style={styles.container}>
+            <Router
+              onStateChange={store.nav.handleState}
+              sceneStyle={styles.scene}
+              titleStyle={styles.title}
+              tintColor={colors.headerTint}
+              headerTintColor={colors.headerTint}>
+              <Stack hideNavBar key="root">
+                <Stack type="replace" key="login">
+                  <Scene
+                    component={Login}
+                    initial
+                    navTransparent
+                    title="Login"
+                  />
+                </Stack>
 
-              <Stack key="register">
-                <Scene
-                  component={Register}
-                  navTransparent
-                  title="Register"
-                />
-              </Stack>
+                <Stack navTransparent key="register" title="Register">
+                  <Scene
+                    renderBackButton={BackButton}
+                    component={Register}
+                  />
+                </Stack>
 
-              <Tabs
-                indicatorStyle={{ backgroundColor: 'white' }}
-                labelStyle={{ fontWeight: 'bold' }}
-                tabBarStyle={styles.tab}
-                tabBarPosition="top"
-                tabBarComponent={TabBar}
-                hideNavBar
-                type="reset"
-                key="home">
-                <Scene
+                <Tabs
+                  indicatorStyle={{ backgroundColor: 'white' }}
+                  labelStyle={{ fontWeight: 'bold' }}
+                  tabBarStyle={styles.tab}
+                  tabBarPosition="top"
+                  tabBarComponent={TabBar}
                   hideNavBar
-                  component={Home}
-                  tabBarLabel="AnaSayfa"
-                  key="home_0"
-                />
-                <Scene
-                  hideNavBar
-                  component={Chats}
-                  tabBarLabel="Sohbetler"
-                  key="home_1"
-                />
-              </Tabs>
+                  type="reset"
+                  key="home">
+                  <Scene
+                    hideNavBar
+                    component={Home}
+                    tabBarLabel="AnaSayfa"
+                    key="home_0"
+                  />
+                  <Scene
+                    hideNavBar
+                    component={Chats}
+                    tabBarLabel="Sohbetler"
+                    key="home_1"
+                  />
+                </Tabs>
 
-              <Stack navBar={ChatBar} key="chat">
-                <Scene component={Chat} />
+                <Stack navBar={ChatBar} key="chat">
+                  <Scene component={Chat} />
+                </Stack>
+                <Stack key="settings">
+                  <Scene
+                    component={Settings}
+                    renderBackButton={BackButton}
+                    title="Settings"
+                    navigationBarStyle={styles.navigationBarStyle}
+                  />
+                </Stack>
               </Stack>
-            </Stack>
-          </Router>
+            </Router>
+          </View>
+          <DropDown />
         </Provider>
       </View>
     );
@@ -112,5 +131,9 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
+  },
+  navigationBarStyle: {
+    backgroundColor: colors.primary,
+    borderBottomWidth: 0,
   },
 });

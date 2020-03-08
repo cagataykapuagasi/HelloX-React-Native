@@ -5,7 +5,6 @@ import { inject, observer } from 'mobx-react';
 import { ScaledSheet, scale } from 'react-native-size-matters';
 import { TextInput, Form } from '~/components/form';
 import { Container, Button } from '~/components';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Auth } from '../api';
 import { Actions } from 'react-native-router-flux';
 import { Formik } from 'formik';
@@ -21,8 +20,9 @@ const Login = props => {
         setUser(res);
         Actions.home();
       })
-      .catch(({ error }) => {
-        setErrors(error);
+      .catch(e => {
+        console.warn(e);
+        //setErrors(error);
         setSubmitting(false);
       });
   };
@@ -46,8 +46,7 @@ const Login = props => {
               </View>
 
               <Button
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
+                horizontal
                 colors={colors.button}
                 text="Login"
                 distance={50}

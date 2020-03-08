@@ -38,21 +38,19 @@ const TabBar = props => {
     }).start();
   };
 
-  const openSettings = () => props.store.user.logOut();
+  const openSettings = () => props.store.nav.openDropDown();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.head}>
-        <View style={styles.settingsView}>
-          <TouchableOpacity onPress={openSettings} style={styles.settings}>
-            <Icon
-              type="fontawesome"
-              name="ellipsis-v"
-              size={20}
-              color={colors.background}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={openSettings} style={styles.settings}>
+          <Icon
+            type="fontawesome"
+            name="ellipsis-v"
+            size={20}
+            color={colors.background}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.tab}>
         {props.navigationState.routes.map(({ key }, index) => (
@@ -109,7 +107,7 @@ const styles = ScaledSheet.create({
   },
   text: {
     fontSize: '13@s',
-    fontWeight: '600',
+    fontWeight: 'bold',
     color: colors.background,
   },
   bar: {

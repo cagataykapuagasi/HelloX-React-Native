@@ -7,6 +7,21 @@ import { chat } from './chatStore';
 
 class NavStore {
   @observable currentScreen = 'home_0';
+  @observable dropdown = false;
+
+  @action
+  hideDropDown = () => {
+    if (!this.dropdown) {
+      return;
+    }
+
+    this.dropdown = false;
+  };
+
+  @action
+  openDropDown = () => {
+    this.dropdown = true;
+  };
 
   @action
   handleState = () => {

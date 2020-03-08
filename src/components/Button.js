@@ -11,6 +11,10 @@ import Spinner from 'react-native-spinkit';
 const Button = props => {
   const { onPress, loading, distance, text, colors, disabled } = props;
   const Container = colors ? LinearGradient : View;
+  const coord =
+    props.colors && props.horizontal
+      ? { start: { x: 0, y: 0 }, end: { x: 1, y: 0 } }
+      : null;
 
   return (
     <TouchableOpacity
@@ -20,7 +24,7 @@ const Button = props => {
         opacity: disabled ? 0.8 : 1,
       }}
       onPress={onPress}>
-      <Container style={styles.container} {...props}>
+      <Container {...coord} style={styles.container} {...props}>
         {loading ? (
           <Spinner color="white" size={scale(20)} type="ChasingDots" />
         ) : (
