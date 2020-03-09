@@ -29,12 +29,17 @@ const sendResetCodeSchema = Yup.object().shape({
     .required('E-posta yada kullanıcı adı girin')
     .min(3, 'Kullanıcı adı 3 karakterden uzun olmalı'),
 });
+
 const changePasswordSchema = Yup.object().shape({
   password: Yup.string()
     .required('Lütfen şifrenizi yazın.')
     .min(6, 'Şifre 6 karakterden kısa olamaz.'),
-  password_confirmation: Yup.string()
-    .oneOf([Yup.ref('password')], 'Şifreler birbiriyle uyuşmuyor.')
+  new_password: Yup.string()
+    .notOneOf([Yup.ref('password')], 'Lütfen farklı bir şifre girin.')
+    .required('Lütfen şifrenizi yazın.')
+    .min(6, 'Şifre 6 karakterden kısa olamaz.'),
+  new_password_confirmation: Yup.string()
+    .oneOf([Yup.ref('new_password')], 'Şifreler birbiriyle uyuşmuyor.')
     .required('Lütfen şifrenizi tekrar yazın.'),
 });
 

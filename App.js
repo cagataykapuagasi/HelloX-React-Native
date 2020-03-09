@@ -16,6 +16,7 @@ import {
   Chats,
   Register,
   Settings,
+  ChangePassword,
 } from './src/screens';
 import { colors } from 'res';
 import RNBootSplash from 'react-native-bootsplash';
@@ -102,6 +103,14 @@ export default class App extends Component {
                     component={Settings}
                     renderBackButton={BackButton}
                     title="Settings"
+                    navigationBarStyle={styles.navigationBarStyle}
+                  />
+                </Stack>
+                <Stack key="changePassword">
+                  <Scene
+                    component={ChangePassword}
+                    renderBackButton={BackButton}
+                    title="Change Password"
                     navigationBarStyle={styles.navigationBarStyle}
                   />
                 </Stack>

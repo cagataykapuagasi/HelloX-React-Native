@@ -11,16 +11,11 @@ const getInputTypeProps = name => {
       };
 
     case 'password':
-      return {
-        autoCorrect: false,
-        secureTextEntry: true,
-        autoCapitalize: 'none',
-        iconName: 'lock',
-      };
+    case 'new_password':
+    case 'new_password_confirmation':
     case 'password_confirmation':
       return {
         autoCorrect: false,
-        secureTextEntry: true,
         autoCapitalize: 'none',
         iconName: 'lock',
       };

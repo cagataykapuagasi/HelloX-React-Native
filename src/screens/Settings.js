@@ -95,7 +95,7 @@ const Settings = props => {
   );
 };
 
-export default inject('store')(observer(Settings));
+export default inject('store')(Settings);
 
 const styles = ScaledSheet.create({
   scroll: {

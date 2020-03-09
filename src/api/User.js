@@ -17,7 +17,11 @@ export function getUsers() {
 }
 
 export function search(username) {
-  return request('post', 'user/search', { username: username });
+  return request('post', 'user/search', { username });
+}
+
+export function updatePassword(form) {
+  return request('post', 'user/profile/update-password', form);
 }
 
 export function updatePhoto(photo) {
