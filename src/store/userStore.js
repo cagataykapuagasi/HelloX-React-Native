@@ -4,6 +4,7 @@ import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { setToken } from '../api/Client';
 import { chat } from './chatStore';
+import { showMessage } from 'react-native-flash-message';
 
 class UserStore {
   @observable user = { user: null, token: null, refresh_token: null };
@@ -47,15 +48,21 @@ class UserStore {
       .then(() => {
         this.logOut();
       })
-      .catch(() => {});
+      .catch(() => {
+        showMessage({
+          message:
+            "Something went wrong. We couldn't delete your account.",
+          type: 'danger',
+        });
+      });
   };
 
   @action
   logOut = async () => {
     await AsyncStorage.removeItem('user');
+    Actions.login();
     this.user.user = null;
     this.user.token = null;
-    Actions.login();
   };
 }
 

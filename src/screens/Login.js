@@ -20,9 +20,8 @@ const Login = props => {
         setUser(res);
         Actions.home();
       })
-      .catch(e => {
-        console.warn(e);
-        //setErrors(error);
+      .catch(({ error }) => {
+        setErrors(error);
         setSubmitting(false);
       });
   };

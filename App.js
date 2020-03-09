@@ -22,6 +22,7 @@ import RNBootSplash from 'react-native-bootsplash';
 import { store } from './src/store';
 import { ChatBar, TabBar, BackButton } from './src/components/navigations';
 import DropDown from '~/components/drowdown';
+import FlashMessage from 'react-native-flash-message';
 
 export default class App extends Component {
   componentDidMount() {
@@ -109,6 +110,7 @@ export default class App extends Component {
           </View>
           <DropDown />
         </Provider>
+        <FlashMessage position="top" />
       </View>
     );
   }

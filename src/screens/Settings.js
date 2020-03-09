@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   Platform,
+  Alert,
 } from 'react-native';
 import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
@@ -30,8 +31,19 @@ const Settings = props => {
       user: {
         user: { username, profile_photo },
       },
+      deleteAccount,
     },
   } = props.store;
+
+  const _deleteAccount = () => {
+    Alert.alert('Are you sure?', 'Your account will be deleted', [
+      {
+        text: 'Yes',
+        onPress: () => deleteAccount(),
+      },
+      { text: 'No', style: 'cancel' },
+    ]);
+  };
 
   const selectImage = () => {
     ImagePicker.showImagePicker(({ uri, fileName, type }) => {
@@ -72,7 +84,9 @@ const Settings = props => {
             </TouchableOpacity>
           ))}
 
-          <TouchableOpacity style={styles.deleteContainer}>
+          <TouchableOpacity
+            onPress={_deleteAccount}
+            style={styles.deleteContainer}>
             <Text style={styles.deleteText}>Hesabı Sil</Text>
           </TouchableOpacity>
         </View>
