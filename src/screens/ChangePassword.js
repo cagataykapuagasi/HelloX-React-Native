@@ -17,7 +17,7 @@ const initialValues = {
   new_password_confirmation: '',
 };
 
-const Login = props => {
+const ChangePassword = props => {
   const change = (
     { new_password_confirmation, ...form },
     { setErrors, setSubmitting }
@@ -69,7 +69,7 @@ const Login = props => {
   );
 };
 
-export default inject('store')(observer(Login));
+export default ChangePassword;
 
 const styles = ScaledSheet.create({
   container: {

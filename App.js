@@ -32,12 +32,9 @@ export default class App extends Component {
     store
       .init()
       .then(() => {
-        Actions.replace('home', { title: 'lale' });
-        //
+        Actions.replace('home');
       })
-      .catch(() => {
-        //
-      })
+      .catch()
       .finally(() => RNBootSplash.hide({ duration: 250 }));
   }
 

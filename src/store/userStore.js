@@ -11,14 +11,13 @@ class UserStore {
 
   @action
   init = async () => {
-    const user = JSON.parse(await AsyncStorage.getItem('user'));
-
+    const { user, token } = JSON.parse(await AsyncStorage.getItem('user'));
     if (user) {
-      setToken(user.token);
+      setToken(token);
 
       User.getUser()
-        .then(res => {
-          this.setUser(res);
+        .then(({ user }) => {
+          this.setUser({ user, token });
         })
         .catch(e => {
           this.user = user;
@@ -33,10 +32,8 @@ class UserStore {
   @action
   setUser = async ({ token, user }) => {
     this.user.user = user;
-    if (token) {
-      this.user.token = token;
-      setToken(token);
-    }
+    this.user.token = token;
+    setToken(token);
 
     await chat.init();
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
