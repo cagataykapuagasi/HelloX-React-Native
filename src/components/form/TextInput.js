@@ -19,6 +19,7 @@ const { width } = Dimensions.get('window');
 class TextInput extends React.Component {
   state = {
     showPassword: false,
+    isFocused: false,
   };
 
   togglePassword = () => {
@@ -26,6 +27,10 @@ class TextInput extends React.Component {
       showPassword: !showPassword,
     }));
   };
+
+  onFocus = () => this.setState({ isFocused: true });
+
+  onEndEditing = () => this.setState({ isFocused: false });
 
   render() {
     const {
@@ -60,6 +65,8 @@ class TextInput extends React.Component {
             onEndEditing={this.onEndEditing}
             iconClass={FontAwesomeIcon}
             iconColor={color}
+            onFocus={this.onFocus}
+            onEndEditing={this.onEndEditing}
             passiveIconColor={color}
             iconSize={scale(16)}
             iconWidth={scale(35)}

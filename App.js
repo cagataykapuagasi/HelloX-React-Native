@@ -34,7 +34,6 @@ export default class App extends Component {
       .then(() => {
         Actions.replace('home');
       })
-      .catch()
       .finally(() => RNBootSplash.hide({ duration: 250 }));
   }
 
