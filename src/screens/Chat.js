@@ -19,16 +19,28 @@ export default class Chat extends Component {
     message: null,
   };
 
+  componentDidMount() {
+    const {
+      store: {
+        chat: { subscribeToUser },
+      },
+      item: { id },
+    } = this.props;
+
+    subscribeToUser(id);
+  }
+
   componentWillUnmount() {
     const {
       getRandomUser,
       store: {
-        chat: { closeRoom },
+        chat: { closeRoom, unSubscribeToUser },
       },
       item: { id },
     } = this.props;
 
     closeRoom(id);
+    unSubscribeToUser(id);
     if (getRandomUser) {
       getRandomUser();
     }

@@ -8,6 +8,8 @@ let socket = null;
 class chatStore {
   @observable
   rooms = {};
+  @observable
+  currentUserStatus = null;
 
   init = async () => {
     console.log('chat init');
@@ -28,7 +30,20 @@ class chatStore {
     });
   };
 
-  setCurrentRecipient = user => (this.currentRecipient = user);
+  @action
+  subscribeToUser = id => {
+    socket.emit('subscribe', id);
+
+    socket.on('subscribelisten', status => {
+      console.warn('status', status);
+      this.currentUserStatus = status;
+    });
+  };
+
+  unSubscribeToUser = id => {
+    socket.emit('unsubscribe', id);
+    this.currentUserStatus = null;
+  };
 
   loadRooms = async () => {
     const rooms = JSON.parse(await AsyncStorage.getItem('rooms'));
@@ -60,7 +75,6 @@ class chatStore {
     const newMessage = {
       message,
       type,
-      //viewed: false,
     };
 
     if (room) {
@@ -86,15 +100,11 @@ class chatStore {
   getRoom = user => {
     const roomId = user.id;
     let room = this.rooms[roomId];
-    //const user = this.currentRecipient;
 
     if (room) {
       return this.rooms[roomId].messages;
     }
     room = { messages: [], user };
-    // if (!room.user) {
-    //   room.user = user;
-    // }
     this.rooms[roomId] = room;
     return this.rooms[roomId].messages;
   };
