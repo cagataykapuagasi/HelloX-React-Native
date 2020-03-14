@@ -78,7 +78,6 @@ export default class Chat extends Component {
       props: {
         store: {
           chat: { getRoom },
-          user: { user },
         },
         item,
       },

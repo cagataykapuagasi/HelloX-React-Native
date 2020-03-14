@@ -60,6 +60,7 @@ class UserStore {
     Actions.login();
     this.user.user = null;
     this.user.token = null;
+    chat.disconnect();
   };
 }
 

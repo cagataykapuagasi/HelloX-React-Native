@@ -30,6 +30,10 @@ class chatStore {
     });
   };
 
+  disconnect = () => {
+    socket.disconnect();
+  };
+
   @action
   subscribeToUser = id => {
     socket.emit('subscribe', id);
@@ -41,6 +45,7 @@ class chatStore {
   };
 
   unSubscribeToUser = id => {
+    console.warn('unsubscribe');
     socket.emit('unsubscribe', id);
     this.currentUserStatus = null;
     socket.off('subscribelisten');
