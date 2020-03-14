@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,21 @@ import { ScaledSheet } from 'react-native-size-matters';
 import Icon from '../Icon';
 import { images, fonts, colors } from 'res';
 import { Actions } from 'react-native-router-flux';
+import { inject, observer } from 'mobx-react';
 
 const ChatBar = props => {
+  const {
+    item: { username },
+    store: {
+      chat: { currentUserStatus },
+    },
+  } = props;
+
+  const userStatus = useMemo(
+    () => (currentUserStatus ? 'Online' : 'Offline'),
+    [currentUserStatus]
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.box1}>
@@ -19,7 +32,10 @@ const ChatBar = props => {
           <Icon type="antdesign" name="left" color="white" size={25} />
         </TouchableOpacity>
         <Image source={images.user} style={styles.picture} />
-        <Text style={styles.name}>{props.item.username}</Text>
+        <View>
+          <Text style={styles.name}>{username}</Text>
+          <Text style={styles.status}>{userStatus}</Text>
+        </View>
       </View>
       <TouchableOpacity>
         <Icon
@@ -33,7 +49,7 @@ const ChatBar = props => {
   );
 };
 
-export default ChatBar;
+export default inject('store')(observer(ChatBar));
 
 const styles = ScaledSheet.create({
   container: {
@@ -67,5 +83,11 @@ const styles = ScaledSheet.create({
   box1: {
     alignItems: 'center',
     flexDirection: 'row',
+  },
+  status: {
+    marginLeft: '10@s',
+    color: 'white',
+    fontWeight: '400',
+    fontSize: '12@s',
   },
 });
