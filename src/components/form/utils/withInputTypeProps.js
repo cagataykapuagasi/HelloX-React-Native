@@ -25,6 +25,7 @@ const getInputTypeProps = name => {
         autoCorrect: false,
         iconName: 'user',
         autoCapitalize: 'none',
+        secureTextEntry: false,
       };
     default:
       return {};
