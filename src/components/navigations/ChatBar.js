@@ -21,7 +21,10 @@ const ChatBar = props => {
   } = props;
 
   const userStatus = useMemo(
-    () => (currentUserStatus ? 'Online' : 'Offline'),
+    () =>
+      currentUserStatus !== null && currentUserStatus
+        ? 'Online'
+        : 'Offline',
     [currentUserStatus]
   );
 
