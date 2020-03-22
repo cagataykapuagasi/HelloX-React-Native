@@ -18,6 +18,8 @@ import { Formik } from 'formik';
 import { loginSchema } from '~/utils/validationSchema';
 import ImagePicker from 'react-native-image-picker';
 import { updatePhoto } from '~/api/User';
+import { showMessage } from 'react-native-flash-message';
+import FastImage from 'react-native-fast-image';
 
 const data = [
   { text: 'Change password', onPress: () => Actions.changePassword() },
@@ -30,6 +32,7 @@ const Settings = props => {
     user: {
       user: {
         user: { username, profile_photo },
+        init,
       },
       deleteAccount,
     },
@@ -50,27 +53,43 @@ const Settings = props => {
       if (uri) {
         const data = new FormData();
 
-        data.append('photo', {
+        const photo = {
           name: fileName,
-          type: type,
+          type,
           uri:
             Platform.OS === 'android' ? uri : uri.replace('file://', ''),
-        });
+        };
 
-        global.FormData = global.originalFormData;
+        data.append('photo', photo);
+
+        ///global.FormData = global.originalFormData;
 
         updatePhoto(data)
-          .then(res => console.warn(res))
-          .catch(e => console.warn(e));
+          .then(init)
+          .catch(e =>
+            showMessage({
+              type: 'danger',
+              message:
+                "Something went wrong. We couldn't upload your photo",
+            })
+          );
       }
     });
   };
 
+  console.warn(profile_photo);
+
   return (
     <ScrollView style={styles.scroll}>
       <View style={styles.container}>
-        <TouchableOpacity onPress={selectImage}>
-          <Image source={{ uri: profile_photo }} style={styles.photo} />
+        <TouchableOpacity
+          style={styles.photoContainer}
+          onPress={selectImage}>
+          <FastImage
+            source={{ uri: profile_photo }}
+            resizeMode={FastImage.resizeMode.contain}
+            style={styles.photo}
+          />
         </TouchableOpacity>
         <Text style={styles.text}>{username}</Text>
         <View style={styles.menuContainer}>
@@ -107,10 +126,13 @@ const styles = ScaledSheet.create({
     paddingTop: '30@vs',
     paddingHorizontal: '20@s',
   },
+  photoContainer: {
+    borderWidth: 0.5,
+    borderRadius: '70@s',
+  },
   photo: {
     height: '140@s',
     width: '140@s',
-    borderWidth: 0.5,
     borderRadius: '70@s',
   },
   text: {

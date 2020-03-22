@@ -26,7 +26,7 @@ export function updatePassword(form) {
 
 export function updatePhoto(photo) {
   return request('post', 'user/profile/update-photo', photo, {
-    // 'Content-Type': 'multipart/form-data',
-    // Accept: 'multipart/form-data',
+    'Content-Type': 'multipart/form-data',
+    Accept: 'multipart/form-data',
   });
 }

@@ -8,6 +8,7 @@ const getInputTypeProps = name => {
         keyboardType: 'email-address',
         autoCapitalize: 'none',
         iconName: 'envelope',
+        secureTextEntry: false,
       };
 
     case 'password':
@@ -18,6 +19,7 @@ const getInputTypeProps = name => {
         autoCorrect: false,
         autoCapitalize: 'none',
         iconName: 'lock',
+        maxLength: 15,
       };
     case 'username':
       return {
@@ -25,6 +27,8 @@ const getInputTypeProps = name => {
         autoCorrect: false,
         iconName: 'user',
         autoCapitalize: 'none',
+        secureTextEntry: false,
+        maxLength: 10,
       };
     default:
       return {};

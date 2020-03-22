@@ -21,8 +21,8 @@ const Login = props => {
         Actions.home();
       })
       .catch(({ error }) => {
-        setErrors(error);
         setSubmitting(false);
+        setErrors(error);
       });
   };
 

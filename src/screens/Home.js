@@ -128,7 +128,7 @@ export default class Home extends Component {
       state: { users, loading },
     } = this;
 
-    console.log(users);
+    console.log('home', users);
 
     return (
       <View style={styles.container}>

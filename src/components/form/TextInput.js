@@ -74,7 +74,6 @@ class TextInput extends React.Component {
             labelStyle={[styles.labelStyle, { fontSize, bottom }]}
             inputStyle={styles.inputStyle}
             secureTextEntry={!showPassword}
-            maxLength={10}
             {...props}
           />
 
