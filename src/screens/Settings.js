@@ -7,6 +7,7 @@ import {
   ScrollView,
   Platform,
   Alert,
+  Linking,
 } from 'react-native';
 import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
@@ -23,8 +24,14 @@ import FastImage from 'react-native-fast-image';
 
 const data = [
   { text: 'Change password', onPress: () => Actions.changePassword() },
-  { text: 'Rate us' },
-  { text: 'Contact us' },
+  {
+    text: 'Rate us',
+    onPress: () => Linking.openURL('market://details?id=hellox'),
+  },
+  {
+    text: 'Contact us',
+    onPress: () => Linking.openURL('mailto:cagatay.kapuagasi@gmail.com'),
+  },
 ];
 
 const Settings = props => {
@@ -32,9 +39,9 @@ const Settings = props => {
     user: {
       user: {
         user: { username, profile_photo },
-        init,
       },
       deleteAccount,
+      updateProfilePhoto,
     },
   } = props.store;
 
@@ -62,35 +69,36 @@ const Settings = props => {
 
         data.append('photo', photo);
 
-        ///global.FormData = global.originalFormData;
-
         updatePhoto(data)
-          .then(init)
-          .catch(e =>
+          .then(() => updateProfilePhoto(uri))
+          .catch(e => {
+            console.log('e', e);
             showMessage({
               type: 'danger',
               message:
-                "Something went wrong. We couldn't upload your photo",
-            })
-          );
+                "Something went wrong. We couldn't upload your photo.",
+            });
+          });
       }
     });
   };
 
-  console.warn(profile_photo);
+  const source = profile_photo ? { uri: profile_photo } : images.user;
 
   return (
     <ScrollView style={styles.scroll}>
       <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.photoContainer}
-          onPress={selectImage}>
-          <FastImage
-            source={{ uri: profile_photo }}
-            resizeMode={FastImage.resizeMode.contain}
-            style={styles.photo}
-          />
-        </TouchableOpacity>
+        <View style={styles.photoContainer}>
+          <FastImage source={source} style={styles.photo} />
+          <TouchableOpacity onPress={selectImage} style={styles.select}>
+            <Icon
+              type="material"
+              name="camera"
+              size={25}
+              color={colors.background}
+            />
+          </TouchableOpacity>
+        </View>
         <Text style={styles.text}>{username}</Text>
         <View style={styles.menuContainer}>
           {data.map(({ text, onPress }) => (
@@ -114,7 +122,7 @@ const Settings = props => {
   );
 };
 
-export default inject('store')(Settings);
+export default inject('store')(observer(Settings));
 
 const styles = ScaledSheet.create({
   scroll: {
@@ -127,13 +135,25 @@ const styles = ScaledSheet.create({
     paddingHorizontal: '20@s',
   },
   photoContainer: {
-    borderWidth: 0.5,
+    borderWidth: 1,
+    borderStyle: 'dotted',
     borderRadius: '70@s',
   },
   photo: {
     height: '140@s',
     width: '140@s',
     borderRadius: '70@s',
+  },
+  select: {
+    position: 'absolute',
+    height: '40@s',
+    width: '40@s',
+    borderRadius: '20@s',
+    backgroundColor: colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    bottom: 0,
+    right: 0,
   },
   text: {
     fontSize: '14@s',

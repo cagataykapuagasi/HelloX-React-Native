@@ -40,6 +40,11 @@ class UserStore {
   };
 
   @action
+  updateProfilePhoto = url => {
+    this.user.user.profile_photo = url;
+  };
+
+  @action
   deleteAccount = () => {
     User.deleteAccount()
       .then(() => {

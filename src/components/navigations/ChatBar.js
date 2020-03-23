@@ -11,10 +11,11 @@ import Icon from '../Icon';
 import { images, fonts, colors } from 'res';
 import { Actions } from 'react-native-router-flux';
 import { inject, observer } from 'mobx-react';
+import FastImage from 'react-native-fast-image';
 
 const ChatBar = props => {
   const {
-    item: { username },
+    item: { username, profile_photo },
     store: {
       chat: { currentUserStatus },
     },
@@ -28,13 +29,15 @@ const ChatBar = props => {
     [currentUserStatus]
   );
 
+  const source = profile_photo ? { uri: profile_photo } : images.user;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.box1}>
         <TouchableOpacity onPress={Actions.pop} style={styles.button}>
           <Icon type="antdesign" name="left" color="white" size={25} />
         </TouchableOpacity>
-        <Image source={images.user} style={styles.picture} />
+        <FastImage source={source} style={styles.picture} />
         <View>
           <Text style={styles.name}>{username}</Text>
           <Text style={styles.status}>{userStatus}</Text>

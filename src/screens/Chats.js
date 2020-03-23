@@ -20,17 +20,17 @@ export default class Chats extends Component {
   state = {};
 
   renderItem = ({ item: { user, messages } }) => {
-    console.log(user);
     const length = messages.length;
+
+    const source = user.profile_photo
+      ? { uri: user.profile_photo }
+      : images.user;
 
     return (
       <TouchableOpacity
         onPress={() => Actions.chat({ item: user })}
         style={styles.card}>
-        <Image
-          style={styles.photo}
-          source={{ uri: 'https://picsum.photos/200/200' }}
-        />
+        <Image style={styles.photo} source={source} />
         <View style={styles.card2}>
           <View style={styles.card2_1}>
             <Text style={styles.username}>{user.username}</Text>
