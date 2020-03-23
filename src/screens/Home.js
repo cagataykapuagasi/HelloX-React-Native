@@ -15,6 +15,7 @@ import { ScaledSheet } from 'react-native-size-matters';
 import { Icon, SearchBar } from '~/components';
 import { User } from '~/api';
 import { Actions } from 'react-native-router-flux';
+import FastImage from 'react-native-fast-image';
 
 const { width } = Dimensions.get('window');
 
@@ -77,25 +78,24 @@ export default class Home extends Component {
   };
 
   renderItem = ({ item }) => {
+    const { profile_photo, username, status, about } = item;
+
+    const source = profile_photo ? { uri: profile_photo } : images.user;
     return (
       <TouchableOpacity
         onPress={() => this.openChatScreen(item)}
-        style={styles.card}>
-        <Image
-          style={styles.photo}
-          source={{ uri: 'https://picsum.photos/200/200' }}
-        />
+        style={[
+          styles.card,
+          {
+            borderBottomColor: colors[status ? 'online' : 'offline'],
+          },
+        ]}>
+        <FastImage style={styles.photo} source={source} />
         <View style={styles.usernameView}>
-          <Text style={styles.username}>{item.username}</Text>
-          <View
-            style={[
-              styles.online,
-              {
-                backgroundColor:
-                  colors[item.status ? 'online' : 'offline'],
-              },
-            ]}
-          />
+          <Text style={styles.username}>{username}</Text>
+          <Text numberOfLines={1} style={styles.status}>
+            {about ? about : 'Durum yok'}
+          </Text>
         </View>
       </TouchableOpacity>
     );
@@ -166,29 +166,41 @@ const styles = ScaledSheet.create({
     paddingHorizontal: 10,
   },
   card: {
-    height: '150@s',
+    height: '60@s',
     width: width * 0.5 - 20,
-    alignItems: 'center',
     borderRadius: '10@s',
+    borderTopLeftRadius: 0,
     marginTop: '15@s',
-    backgroundColor: '#d4d4d4',
+    borderWidth: 0.5,
+    borderBottomWidth: 2,
+    flexDirection: 'row',
+    borderColor: colors.text,
   },
   photo: {
-    height: '100@s',
-    width: '100%',
-    borderTopLeftRadius: '10@s',
-    borderTopRightRadius: '10@s',
+    height: '50@s',
+    width: '50@s',
+    borderBottomRightRadius: '10@s',
   },
   usernameView: {
     flex: 1,
-    alignItems: 'center',
-    paddingTop: '10@s',
+    paddingTop: '5@s',
+    justifyContent: 'space-between',
+    paddingBottom: '15@s',
+    overflow: 'hidden',
+    paddingHorizontal: '10@s',
   },
   footer: {
     height: '15@s',
   },
   username: {
-    fontWeight: 'bold',
+    fontSize: '14@s',
+    fontWeight: '600',
+    color: colors.text,
+  },
+  status: {
+    fontSize: '13@s',
+    fontWeight: '400',
+    color: colors.text,
   },
   cardIcon: {
     position: 'absolute',
