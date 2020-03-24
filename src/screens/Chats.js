@@ -1,48 +1,43 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  Image,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
 import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { Icon } from '~/components';
 import { toJS } from 'mobx';
 import { Actions } from 'react-native-router-flux';
+import moment from 'moment';
 
 @inject('store')
 @observer
 export default class Chats extends Component {
   state = {};
 
-  renderItem = ({ item: { user, messages } }) => {
+  renderItem = ({ item: { user, messages, date } }) => {
     const length = messages.length;
 
-    const source = user.profile_photo
-      ? { uri: user.profile_photo }
-      : images.user;
+    const source = user.profile_photo ? { uri: user.profile_photo } : images.user;
 
     return (
-      <TouchableOpacity
-        onPress={() => Actions.chat({ item: user })}
-        style={styles.card}>
+      <TouchableOpacity onPress={() => Actions.chat({ item: user })} style={styles.card}>
         <Image style={styles.photo} source={source} />
         <View style={styles.card2}>
           <View style={styles.card2_1}>
             <Text style={styles.username}>{user.username}</Text>
-            <Text style={styles.message} numberOfLines={1}>
-              {length && messages[length - 1].message}
+            <Text style={styles.date}>
+              {length && moment(messages[length - 1].date).format('HH:mm')}
             </Text>
           </View>
 
           <View style={styles.card2_2}>
-            <Text style={styles.date}>{'Dakika'}</Text>
-            <View style={styles.countView}>
-              <Text style={styles.count}>{'1'}</Text>
+            <Text style={styles.message} numberOfLines={1}>
+              {length && messages[length - 1].message}
+            </Text>
+
+            <View style={styles.countContainer}>
+              <View style={styles.countView}>
+                <Text style={styles.count}>{'1'}</Text>
+              </View>
             </View>
           </View>
         </View>
@@ -54,35 +49,29 @@ export default class Chats extends Component {
 
   ListFooterComponent = () => <View style={styles.footer} />;
 
-  ListEmptyComponent = () => (
-    <Text style={styles.emptyText}>Henüz hiç mesajlaşma yok.</Text>
-  );
+  ListEmptyComponent = () => <Text style={styles.emptyText}>Henüz hiç mesajlaşma yok.</Text>;
 
   render() {
     const {
       props: {
         store: {
-          chat: { rooms },
+          chatStore: { rooms },
         },
       },
     } = this;
 
-    const _rooms = Object.values(toJS(rooms)).sort(
-      (a, b) => b.lastUpdate - a.lastUpdate
-    );
+    const _rooms = Object.values(toJS(rooms)).sort((a, b) => b.lastUpdate - a.lastUpdate);
 
     return (
-      <View style={styles.container}>
-        <FlatList
-          data={_rooms}
-          renderItem={this.renderItem}
-          style={styles.container}
-          style={styles.flatlist}
-          keyExtractor={this.keyExtractor}
-          ListFooterComponent={this.ListFooterComponent}
-          ListEmptyComponent={this.ListEmptyComponent}
-        />
-      </View>
+      <FlatList
+        data={_rooms}
+        renderItem={this.renderItem}
+        style={styles.container}
+        style={styles.flatlist}
+        keyExtractor={this.keyExtractor}
+        ListFooterComponent={this.ListFooterComponent}
+        ListEmptyComponent={this.ListEmptyComponent}
+      />
     );
   }
 }
@@ -102,15 +91,9 @@ const styles = ScaledSheet.create({
   },
   flatlist: {
     flex: 1,
-    //backgroundColor: 'yellow',
     paddingHorizontal: '10@s',
   },
-  card: {
-    height: '75@s',
-    flexDirection: 'row',
-    alignItems: 'center',
-    //backgroundColor: colors.background,
-  },
+
   photo: {
     height: '50@s',
     width: '50@s',
@@ -124,10 +107,10 @@ const styles = ScaledSheet.create({
     fontSize: '14@s',
   },
   message: {
-    //fontWeight: 'bold',
-    marginTop: '5@s',
     fontSize: '13@s',
     color: '#777777',
+    flexWrap: 'wrap',
+    flex: 1,
   },
   count: {
     fontWeight: 'bold',
@@ -135,37 +118,45 @@ const styles = ScaledSheet.create({
     color: 'white',
   },
   countView: {
-    height: '20@s',
-    width: '20@s',
-    borderRadius: '10@s',
+    height: '16@s',
+    width: '16@s',
+    borderRadius: '8@s',
     backgroundColor: colors.secondary,
-    marginTop: '5@s',
     justifyContent: 'center',
     alignItems: 'center',
   },
   date: {
-    //fontWeight: 'bold',
     fontSize: '13@s',
     color: '#777777',
   },
-  card2: {
-    flex: 1,
+  card: {
+    height: '75@s',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+  },
+  card2: {
+    flex: 1,
     borderBottomWidth: 0.5,
     borderColor: colors.text,
     marginLeft: '10@s',
-    paddingVertical: '20@s',
+    paddingVertical: '15@s',
   },
   card2_1: {
-    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    paddingBottom: '2@s',
   },
   card2_2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   emptyText: {
     textAlign: 'center',
     top: '10@s',
+  },
+  countContainer: {
+    width: '22@s',
   },
 });
