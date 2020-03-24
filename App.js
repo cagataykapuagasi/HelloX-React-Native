@@ -1,23 +1,8 @@
 import React, { Component } from 'react';
 import { StyleSheet, StatusBar, View } from 'react-native';
-import {
-  Scene,
-  Modal,
-  Router,
-  Actions,
-  Stack,
-  Tabs,
-} from 'react-native-router-flux';
+import { Scene, Modal, Router, Actions, Stack, Tabs } from 'react-native-router-flux';
 import { Provider } from 'mobx-react';
-import {
-  Home,
-  Login,
-  Chat,
-  Chats,
-  Register,
-  Settings,
-  ChangePassword,
-} from './src/screens';
+import { Home, Login, Chat, Chats, Register, Settings, ChangePassword } from './src/screens';
 import { colors } from 'res';
 import RNBootSplash from 'react-native-bootsplash';
 import { store } from './src/store';
@@ -42,30 +27,20 @@ export default class App extends Component {
       <View style={styles.container}>
         <StatusBar barStyle="light-content" />
         <Provider store={store}>
-          <View
-            onTouchStart={store.nav.hideDropDown}
-            style={styles.container}>
+          <View onTouchStart={store.navStore.hideDropDown} style={styles.container}>
             <Router
-              onStateChange={store.nav.handleState}
+              onStateChange={store.navStore.handleState}
               sceneStyle={styles.scene}
               titleStyle={styles.title}
               tintColor={colors.headerTint}
               headerTintColor={colors.headerTint}>
               <Stack hideNavBar key="root">
                 <Stack type="replace" key="login">
-                  <Scene
-                    component={Login}
-                    initial
-                    navTransparent
-                    title="Login"
-                  />
+                  <Scene component={Login} initial navTransparent title="Login" />
                 </Stack>
 
                 <Stack navTransparent key="register" title="Register">
-                  <Scene
-                    renderBackButton={BackButton}
-                    component={Register}
-                  />
+                  <Scene renderBackButton={BackButton} component={Register} />
                 </Stack>
 
                 <Tabs
@@ -77,18 +52,8 @@ export default class App extends Component {
                   hideNavBar
                   type="reset"
                   key="home">
-                  <Scene
-                    hideNavBar
-                    component={Home}
-                    tabBarLabel="AnaSayfa"
-                    key="home_0"
-                  />
-                  <Scene
-                    hideNavBar
-                    component={Chats}
-                    tabBarLabel="Sohbetler"
-                    key="home_1"
-                  />
+                  <Scene hideNavBar component={Home} tabBarLabel="AnaSayfa" key="home_0" />
+                  <Scene hideNavBar component={Chats} tabBarLabel="Sohbetler" key="home_1" />
                 </Tabs>
 
                 <Stack navBar={ChatBar} key="chat">
