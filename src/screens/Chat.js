@@ -1,28 +1,23 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { images, fonts, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { toJS } from 'mobx';
 import Icon from '~/components/Icon';
+import moment from 'moment';
 
 @inject('store')
 @observer
 export default class Chat extends Component {
   state = {
-    message: null,
+    message: '',
   };
 
   componentDidMount() {
     const {
       store: {
-        chat: { subscribeToUser },
+        chatStore: { subscribeToUser },
       },
       item: { id },
     } = this.props;
@@ -34,7 +29,7 @@ export default class Chat extends Component {
     const {
       getRandomUser,
       store: {
-        chat: { closeRoom, unSubscribeToUser },
+        chatStore: { closeRoom, unSubscribeToUser },
       },
       item: { id },
     } = this.props;
@@ -50,21 +45,28 @@ export default class Chat extends Component {
     const {
       props: {
         store: {
-          chat: { sendMessage },
+          chatStore: { sendMessage, init },
         },
-        item: { id },
+        item: { id, profile_photo },
       },
       state: { message },
     } = this;
 
-    sendMessage({ recipientId: id, message });
-    this.setState({ message: null });
+    if (message.trim().length > 0) {
+      sendMessage({ recipientId: id, message, profile_photo });
+      this.setState({ message: '' });
+    }
   };
 
-  renderItem = ({ item: { type, message } }) => {
+  renderItem = ({ item: { type, message, date } }) => {
     return (
       <View style={styles[type === 'sent' ? 'sent' : 'received']}>
-        <Text>{message}</Text>
+        <View style={styles.messageContainer}>
+          <Text style={styles.message}>{message}</Text>
+        </View>
+        <View style={styles.dateContainer}>
+          <Text style={styles.date}>{moment(date).format('HH:mm')}</Text>
+        </View>
       </View>
     );
   };
@@ -77,7 +79,7 @@ export default class Chat extends Component {
     const {
       props: {
         store: {
-          chat: { getRoom },
+          chatStore: { getRoom, connected },
         },
         item,
       },
@@ -100,17 +102,12 @@ export default class Chat extends Component {
             value={message}
             onChangeText={message => this.setState({ message })}
             style={styles.input}
-            placeholder="Bir Mesaj Yaz"
+            placeholder={connected ? 'Bir Mesaj Yaz' : 'Sohbete bağlanılmaya çalışılıyor...'}
+            editable={connected}
+            multiline
           />
-          <TouchableOpacity
-            style={styles.footerButton}
-            onPress={this.sendMessage}>
-            <Icon
-              type="material"
-              name="send"
-              size={20}
-              color={colors.background}
-            />
+          <TouchableOpacity style={styles.footerButton} onPress={this.sendMessage}>
+            <Icon type="material" name="send" size={20} color={colors.background} />
           </TouchableOpacity>
         </View>
       </View>
@@ -121,7 +118,6 @@ export default class Chat extends Component {
 const card = {
   marginTop: '10@s',
   borderRadius: '8@s',
-  padding: '10@s',
   shadowOffset: {
     width: 0,
     height: 0,
@@ -131,6 +127,7 @@ const card = {
   shadowOpacity: 1,
   elevation: 1,
   maxWidth: '90%',
+  flexDirection: 'row',
 };
 
 const styles = ScaledSheet.create({
@@ -175,9 +172,7 @@ const styles = ScaledSheet.create({
     backgroundColor: '#128C7E',
   },
   flatlist: {
-    //paddingBottom: 5,
     flex: 1,
-    //backgroundColor: 'yellow',
     paddingBottom: 45,
   },
   sent: {
@@ -194,5 +189,24 @@ const styles = ScaledSheet.create({
   },
   listHeader: {
     height: 10,
+  },
+  date: {
+    color: colors.text,
+    fontSize: '11@s',
+    alignSelf: 'flex-end',
+    textAlign: 'right',
+  },
+  message: {
+    fontSize: '14@s',
+  },
+  dateContainer: {
+    bottom: '3@s',
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
+    paddingRight: '5@s',
+  },
+  messageContainer: {
+    maxWidth: '90%',
+    padding: '5@s',
   },
 });
