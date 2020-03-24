@@ -13,7 +13,7 @@ import moment from 'moment';
 export default class Chats extends Component {
   state = {};
 
-  renderItem = ({ item: { user, messages, date } }) => {
+  renderItem = ({ item: { user, messages, unRead } }) => {
     const length = messages.length;
 
     const source = user.profile_photo ? { uri: user.profile_photo } : images.user;
@@ -34,11 +34,13 @@ export default class Chats extends Component {
               {length && messages[length - 1].message}
             </Text>
 
-            <View style={styles.countContainer}>
-              <View style={styles.countView}>
-                <Text style={styles.count}>{'1'}</Text>
+            {unRead > 0 && (
+              <View style={styles.countContainer}>
+                <View style={styles.countView}>
+                  <Text style={styles.count}>{unRead}</Text>
+                </View>
               </View>
-            </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>

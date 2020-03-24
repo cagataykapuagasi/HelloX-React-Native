@@ -111,10 +111,12 @@ export default class chatStore {
       room = {
         messages: [],
         user: { username, id: recipientId, profile_photo },
+        unRead: 1,
       };
       room.messages.push(other);
     }
     room.lastUpdate = Date.now();
+    room.unRead++;
     rooms[roomId] = room;
 
     this.saveRooms();
@@ -125,6 +127,8 @@ export default class chatStore {
     if (this.rooms[id] && !this.rooms[id].messages.length) {
       delete this.rooms[id];
     }
+
+    this.saveRooms();
   };
 
   @action
@@ -140,9 +144,10 @@ export default class chatStore {
     let room = this.rooms[roomId];
 
     if (room) {
+      room.unRead = 0;
       return this.rooms[roomId].messages;
     }
-    room = { messages: [], user: { username, id, profile_photo } };
+    room = { messages: [], user: { username, id, profile_photo }, unRead: 0 };
     this.rooms[roomId] = room;
     return this.rooms[roomId].messages;
   };
