@@ -26,10 +26,14 @@ const Register = props => {
     { password_confirmation, ...form },
     { setErrors, setSubmitting }
   ) => {
-    const { setUser } = props.store.user;
+    const {
+      userStore: { setUser },
+      chatStore: { init },
+    } = props.store;
     Auth.register(form)
       .then(res => {
         setUser(res);
+        init();
         Actions.home();
       })
       .catch(({ error }) => {

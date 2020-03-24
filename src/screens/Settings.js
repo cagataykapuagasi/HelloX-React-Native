@@ -36,9 +36,9 @@ const data = [
 
 const Settings = props => {
   const {
-    user: {
+    userStore: {
       user: {
-        user: { username, profile_photo },
+        profile: { username, profile_photo },
       },
       deleteAccount,
       updateProfilePhoto,
@@ -72,7 +72,6 @@ const Settings = props => {
         updatePhoto(data)
           .then(() => updateProfilePhoto(uri))
           .catch(e => {
-            console.log('e', e);
             showMessage({
               type: 'danger',
               message:
