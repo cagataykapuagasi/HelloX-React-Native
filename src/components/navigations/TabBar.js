@@ -19,7 +19,10 @@ const tabWidth = width / tabs.length;
 const animatedBar = new Animated.Value(0);
 
 const TabBar = props => {
-  const { currentScreen } = props.store.nav;
+  const {
+    navStore: { currentScreen, openDropDown },
+    userStore: { logOut },
+  } = props.store;
 
   useEffect(() => animate(), [currentScreen]);
 
@@ -28,7 +31,7 @@ const TabBar = props => {
   };
 
   const animate = key => {
-    const index = props.store.nav.currentScreen.substr(-1);
+    const index = currentScreen.substr(-1);
     const toValue = tabWidth * index;
 
     Animated.timing(animatedBar, {
@@ -38,12 +41,17 @@ const TabBar = props => {
     }).start();
   };
 
-  const openSettings = () => props.store.nav.openDropDown();
+  const data = [
+    { text: 'Settings', onPress: () => Actions.settings() },
+    { text: 'Sign Out', onPress: () => logOut() },
+  ];
+
+  const openDropdown = () => openDropDown(data);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.head}>
-        <TouchableOpacity onPress={openSettings} style={styles.settings}>
+        <TouchableOpacity onPress={openDropdown} style={styles.settings}>
           <Icon
             type="fontawesome"
             name="ellipsis-v"

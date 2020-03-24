@@ -1,11 +1,5 @@
 import React, { useMemo } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Icon from '../Icon';
 import { images, fonts, colors } from 'res';
@@ -15,17 +9,18 @@ import FastImage from 'react-native-fast-image';
 
 const ChatBar = props => {
   const {
-    item: { username, profile_photo },
+    item: { username, profile_photo, id },
     store: {
-      chat: { currentUserStatus },
+      chatStore: { currentUserStatus, deleteRoom },
+      navStore,
     },
   } = props;
 
+  const data = [{ text: 'Delete', onPress: () => deleteRoom(id) }];
+  const openDropdown = () => navStore.openDropDown(data, styles.dropdown);
+
   const userStatus = useMemo(
-    () =>
-      currentUserStatus !== null && currentUserStatus
-        ? 'Online'
-        : 'Offline',
+    () => (currentUserStatus !== null ? (currentUserStatus ? 'Online' : 'Offline') : null),
     [currentUserStatus]
   );
 
@@ -40,16 +35,11 @@ const ChatBar = props => {
         <FastImage source={source} style={styles.picture} />
         <View>
           <Text style={styles.name}>{username}</Text>
-          <Text style={styles.status}>{userStatus}</Text>
+          {userStatus && <Text style={styles.status}>{userStatus}</Text>}
         </View>
       </View>
-      <TouchableOpacity>
-        <Icon
-          type="feather"
-          name="more-vertical"
-          color="white"
-          size={25}
-        />
+      <TouchableOpacity onPress={openDropdown}>
+        <Icon type="feather" name="more-vertical" color="white" size={25} />
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -95,5 +85,9 @@ const styles = ScaledSheet.create({
     color: 'white',
     fontWeight: '400',
     fontSize: '12@s',
+  },
+  dropdown: {
+    right: '10@s',
+    top: '50@s',
   },
 });

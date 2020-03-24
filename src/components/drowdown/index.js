@@ -9,15 +9,15 @@ import { Actions } from 'react-native-router-flux';
 const DropDownList = props => {
   const {
     store: {
-      nav: { dropdown },
-      user: { logOut },
+      navStore: { dropdown },
     },
   } = props;
 
-  const data = [
-    { text: 'Settings', onPress: () => Actions.settings() },
-    { text: 'Sign Out', onPress: () => logOut() },
-  ];
+  if (!dropdown) {
+    return null;
+  }
+
+  const { data, style } = dropdown;
   const height = new Animated.Value(0);
 
   const animate = toValue =>
@@ -26,25 +26,15 @@ const DropDownList = props => {
       toValue: verticalScale(toValue),
     });
 
-  useEffect(() => {
-    animate(40 * data.length).start();
-  }, [height]);
-
-  if (!dropdown) {
-    return null;
-  }
+  animate(40 * data.length).start();
 
   return (
-    <Animated.View style={[styles.container, { height }]}>
+    <Animated.View style={[styles.container, { height }, style]}>
       {data.map((item, index) => (
         <Item key={index} item={item} index={index} />
       ))}
     </Animated.View>
   );
-};
-
-DropDownList.defaultProps = {
-  data: ['Settings', 'Sign Out'],
 };
 
 export default inject('store')(observer(DropDownList));
@@ -58,5 +48,4 @@ const styles = ScaledSheet.create({
     width: '150@s',
     backgroundColor: colors.secondary,
   },
-  list: {},
 });

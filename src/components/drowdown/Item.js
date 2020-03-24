@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  Animated,
-  TouchableOpacity,
-  Easing,
-} from 'react-native';
+import { View, Text, Animated, TouchableOpacity, Easing } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import colors from 'res/colors';
 import { observer, inject } from 'mobx-react';
@@ -15,7 +9,7 @@ const Item = props => {
     item: { text, onPress },
     index,
     store: {
-      nav: { hideDropDown },
+      navStore: { hideDropDown },
     },
   } = props;
   const opacity = new Animated.Value(0);
