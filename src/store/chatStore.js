@@ -1,54 +1,81 @@
 import { observable, action } from 'mobx';
 import io from 'socket.io-client/dist/socket.io';
-import { user as userStore } from './userStore';
 import AsyncStorage from '@react-native-community/async-storage';
+import { Actions } from 'react-native-router-flux';
 
+let _io = null;
 let socket = null;
 
-class chatStore {
+export default class chatStore {
   @observable
   rooms = {};
   @observable
   currentUserStatus = null;
+  @observable
+  connected = false;
 
-  init = async () => {
-    console.log('chat init');
+  constructor(store) {
+    this.store = store;
+  }
+
+  init = async token => {
     await this.loadRooms();
-    const { token, user } = userStore.user;
-    socket = await io.connect('http://localhost:3000', {
+
+    _io = await io('https://hellox.herokuapp.com/', {
       query: {
         token,
       },
+      reconnection: true,
+      reconnectionDelay: 500,
+      reconnectionAttempts: Infinity,
+      transports: ['websocket'],
     });
 
-    socket.on('new message', ({ senderId, recipientId, ...other }) => {
-      this.addNewMessage({
-        type: 'received',
-        recipientId: senderId,
-        ...other,
+    _io.on('connect', async () => {
+      console.warn('chat init', _io.connected);
+      this.connected = _io.connected;
+      socket = _io.connect();
+
+      _io.on('new message', ({ senderId, recipientId, ...other }) => {
+        this.addNewMessage({
+          type: 'received',
+          recipientId: senderId,
+          ...other,
+        });
       });
+    });
+
+    _io.on('disconnect', e => {
+      this.connected = false;
+      console.log('disconnect', e);
     });
   };
 
   disconnect = () => {
-    socket.disconnect();
+    _io.disconnect();
   };
 
   @action
   subscribeToUser = id => {
+    if (!this.connected || !socket) {
+      return;
+    }
     socket.emit('subscribe', id);
 
-    socket.on('subscribelisten', status => {
+    _io.on('subscribelisten', status => {
       console.warn('subscribe', status);
       this.currentUserStatus = status;
     });
   };
 
   unSubscribeToUser = id => {
+    if (!this.connected || !socket) {
+      return;
+    }
     console.warn('unsubscribe');
     socket.emit('unsubscribe', id);
     this.currentUserStatus = null;
-    socket.off('subscribelisten');
+    _io.off('subscribelisten');
   };
 
   loadRooms = async () => {
@@ -58,37 +85,34 @@ class chatStore {
     }
   };
 
-  sendMessage = ({ recipientId, message }) => {
-    const { username, id } = userStore.user.user;
+  sendMessage = data => {
+    const { username, id } = this.store.userStore.user.profile;
     const newMessage = {
-      message,
-      recipientId,
+      ...data,
       senderId: id,
       username,
+      date: Date.now(),
     };
     socket.emit('new message', newMessage);
     this.addNewMessage({ type: 'sent', ...newMessage });
   };
 
-  saveRooms = () =>
-    AsyncStorage.setItem('rooms', JSON.stringify(this.rooms));
+  saveRooms = () => AsyncStorage.setItem('rooms', JSON.stringify(this.rooms));
 
   @action
-  addNewMessage = ({ recipientId, message, type, username }) => {
+  addNewMessage = ({ recipientId, username, profile_photo, ...other }) => {
     const { rooms } = this;
     const roomId = recipientId;
     let room = rooms[roomId];
 
-    const newMessage = {
-      message,
-      type,
-    };
-
     if (room) {
-      room.messages.push(newMessage);
+      room.messages.push(other);
     } else {
-      room = { messages: [], user: { username, id: recipientId } };
-      room.messages.push(newMessage);
+      room = {
+        messages: [],
+        user: { username, id: recipientId, profile_photo },
+      };
+      room.messages.push(other);
     }
     room.lastUpdate = Date.now();
     rooms[roomId] = room;
@@ -98,24 +122,28 @@ class chatStore {
 
   @action
   closeRoom = id => {
-    if (!this.rooms[id].messages.length) {
+    if (this.rooms[id] && !this.rooms[id].messages.length) {
       delete this.rooms[id];
     }
   };
 
   @action
-  getRoom = ({ username, id }) => {
+  deleteRoom = id => {
+    Actions.pop();
+    delete this.rooms[id];
+    this.saveRooms();
+  };
+
+  @action
+  getRoom = ({ username, id, profile_photo }) => {
     const roomId = id;
     let room = this.rooms[roomId];
 
-    console.log('test', id, username);
     if (room) {
       return this.rooms[roomId].messages;
     }
-    room = { messages: [], user: { username, id } };
+    room = { messages: [], user: { username, id, profile_photo } };
     this.rooms[roomId] = room;
     return this.rooms[roomId].messages;
   };
 }
-
-export const chat = new chatStore();

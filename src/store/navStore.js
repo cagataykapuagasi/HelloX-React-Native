@@ -1,13 +1,13 @@
 import { observable, action, computed } from 'mobx';
-import { Auth } from '../api';
 import { Actions } from 'react-native-router-flux';
-import AsyncStorage from '@react-native-community/async-storage';
-import { setToken } from '../api/Client';
-import { chat } from './chatStore';
 
-class NavStore {
+export default class NavStore {
   @observable currentScreen = 'home_0';
-  @observable dropdown = false;
+  @observable dropdown = null;
+
+  constructor(store) {
+    this.store = store;
+  }
 
   @action
   hideDropDown = () => {
@@ -15,12 +15,12 @@ class NavStore {
       return;
     }
 
-    this.dropdown = false;
+    this.dropdown = null;
   };
 
   @action
-  openDropDown = () => {
-    this.dropdown = true;
+  openDropDown = (data, style) => {
+    this.dropdown = { data, style };
   };
 
   @action
@@ -28,5 +28,3 @@ class NavStore {
     this.currentScreen = Actions.currentScene.substring(1);
   };
 }
-
-export const nav = new NavStore();

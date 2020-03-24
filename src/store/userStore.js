@@ -3,16 +3,20 @@ import { Auth, User } from '../api';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { setToken } from '../api/Client';
-import { chat } from './chatStore';
 import { showMessage } from 'react-native-flash-message';
 
-class UserStore {
-  @observable user = { user: null, token: null, refresh_token: null };
+export default class UserStore {
+  @observable user = { profile: null, token: null, refresh_token: null };
+
+  constructor(store) {
+    this.store = store;
+  }
 
   @action
   init = async () => {
-    const { user, token } = JSON.parse(await AsyncStorage.getItem('user'));
-    if (user) {
+    const { profile, token } = JSON.parse(await AsyncStorage.getItem('user'));
+
+    if (profile) {
       setToken(token);
 
       User.getUser()
@@ -20,9 +24,11 @@ class UserStore {
           this.setUser({ user, token });
         })
         .catch(e => {
-          this.user = user;
+          this.user.profile = profile;
+          this.user.token = token;
         });
 
+      await this.store.chatStore.init(token);
       return Promise.resolve();
     }
 
@@ -30,18 +36,17 @@ class UserStore {
   };
 
   @action
-  setUser = async ({ token, user }) => {
-    this.user.user = user;
+  setUser = async ({ user, token }) => {
+    this.user.profile = user;
     this.user.token = token;
     setToken(token);
 
-    await chat.init();
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
 
   @action
   updateProfilePhoto = url => {
-    this.user.user.profile_photo = url;
+    this.user.profile.profile_photo = url;
   };
 
   @action
@@ -52,8 +57,7 @@ class UserStore {
       })
       .catch(() => {
         showMessage({
-          message:
-            "Something went wrong. We couldn't delete your account.",
+          message: "Something went wrong. We couldn't delete your account.",
           type: 'danger',
         });
       });
@@ -63,10 +67,8 @@ class UserStore {
   logOut = async () => {
     await AsyncStorage.removeItem('user');
     Actions.login();
-    this.user.user = null;
+    this.user.profile = null;
     this.user.token = null;
-    chat.disconnect();
+    this.store.chatStore.disconnect();
   };
 }
-
-export const user = new UserStore();
