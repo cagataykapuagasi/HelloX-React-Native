@@ -6,6 +6,6 @@
 
     <item android:gravity="center">
         <!-- the app logo, centered horizontally and vertically -->
-        <bitmap android:src="@mipmap/logo" />
+        <bitmap android:src="@drawable/logo" />
     </item>
 </layer-list>
