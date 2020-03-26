@@ -3,33 +3,40 @@ import {
   View,
   Text,
   TouchableOpacity,
-  Image,
   ScrollView,
   Platform,
   Alert,
   Linking,
+  TextInput,
 } from 'react-native';
-import { images, fonts, colors } from 'res';
+import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet, scale } from 'react-native-size-matters';
-import { TextInput, Form } from '~/components/form';
-import { Container, Icon } from '~/components';
+import { Form } from '~/components/form';
+import { Container, Icon, LoadingIcon } from '~/components';
 import { Actions } from 'react-native-router-flux';
 import { Formik } from 'formik';
 import { loginSchema } from '~/utils/validationSchema';
 import ImagePicker from 'react-native-image-picker';
-import { updatePhoto } from '~/api/User';
+import { updatePhoto, updateAbout } from '~/api/User';
 import { showMessage } from 'react-native-flash-message';
 import FastImage from 'react-native-fast-image';
 
+const {
+  settings: {
+    delete: { title, text, buttons },
+  },
+} = languages.t('alerts');
+const { placeholder, line1, line2, line3, deleteAc } = languages.t('settings');
+
 const data = [
-  { text: 'Change password', onPress: () => Actions.changePassword() },
+  { text: line1, onPress: () => Actions.changePassword() },
   {
-    text: 'Rate us',
+    text: line2,
     onPress: () => Linking.openURL('market://details?id=hellox'),
   },
   {
-    text: 'Contact us',
+    text: line3,
     onPress: () => Linking.openURL('mailto:cagatay.kapuagasi@gmail.com'),
   },
 ];
@@ -38,48 +45,82 @@ const Settings = props => {
   const {
     userStore: {
       user: {
-        profile: { username, profile_photo },
+        profile: { username, profile_photo, about },
       },
       deleteAccount,
       updateProfilePhoto,
+      updateProfileAbout,
     },
   } = props.store;
 
+  const [editable, setEditable] = useState(false);
+  const [aboutLoading, setAboutLoading] = useState(false);
+  const [photoLoading, setPhotoLoading] = useState(false);
+  const [_about, setAbout] = useState(about);
+
   const _deleteAccount = () => {
-    Alert.alert('Are you sure?', 'Your account will be deleted', [
+    Alert.alert(title, text, [
       {
-        text: 'Yes',
+        text: buttons.yes,
         onPress: () => deleteAccount(),
       },
-      { text: 'No', style: 'cancel' },
+      { text: buttons.no, style: 'cancel' },
     ]);
   };
 
   const selectImage = () => {
-    ImagePicker.showImagePicker(({ uri, fileName, type }) => {
+    setPhotoLoading(true);
+
+    ImagePicker.showImagePicker(async ({ uri, fileName, type }) => {
       if (uri) {
         const data = new FormData();
 
         const photo = {
           name: fileName,
           type,
-          uri:
-            Platform.OS === 'android' ? uri : uri.replace('file://', ''),
+          uri: Platform.OS === 'android' ? uri : uri.replace('file://', ''),
         };
 
         data.append('photo', photo);
 
-        updatePhoto(data)
-          .then(() => updateProfilePhoto(uri))
-          .catch(e => {
+        await updatePhoto(data)
+          .then(r => updateProfilePhoto(uri))
+          .catch(e =>
             showMessage({
               type: 'danger',
-              message:
-                "Something went wrong. We couldn't upload your photo.",
-            });
-          });
+              message: settings.photo,
+            })
+          );
       }
+
+      setPhotoLoading(false);
     });
+  };
+
+  const onError = e => {
+    updateProfilePhoto(null);
+  };
+
+  const toggleAbout = () => setEditable(!editable);
+
+  const onEndEditing = async () => {
+    toggleAbout();
+
+    if (_about === about) {
+      return;
+    }
+    setAboutLoading(true);
+
+    await updateAbout(_about)
+      .then(r => updateProfileAbout(_about))
+      .catch(() =>
+        showMessage({
+          type: 'danger',
+          message: settings.about,
+        })
+      );
+
+    setAboutLoading(false);
   };
 
   const source = profile_photo ? { uri: profile_photo } : images.user;
@@ -88,9 +129,10 @@ const Settings = props => {
     <ScrollView style={styles.scroll}>
       <View style={styles.container}>
         <View style={styles.photoContainer}>
-          <FastImage source={source} style={styles.photo} />
-          <TouchableOpacity onPress={selectImage} style={styles.select}>
-            <Icon
+          <FastImage onError={onError} source={source} style={styles.photo} />
+          <TouchableOpacity disabled={photoLoading} onPress={selectImage} style={styles.select}>
+            <LoadingIcon
+              loading={photoLoading}
               type="material"
               name="camera"
               size={25}
@@ -99,21 +141,41 @@ const Settings = props => {
           </TouchableOpacity>
         </View>
         <Text style={styles.text}>{username}</Text>
+        <View style={styles.aboutContainer}>
+          <TextInput
+            numberOfLines={1}
+            maxLength={15}
+            value={_about}
+            onEndEditing={onEndEditing}
+            onChangeText={about => setAbout(about)}
+            editable={editable}
+            style={[styles.about, { color: editable ? colors.black : colors.text }]}
+            placeholder={placeholder}
+            placeholderTextColor={editable ? colors.black : colors.text}
+          />
+          <TouchableOpacity
+            disabled={aboutLoading}
+            style={styles.aboutButton}
+            onPress={toggleAbout}>
+            <LoadingIcon
+              loading={aboutLoading}
+              type="material"
+              name="edit"
+              size={22}
+              color={colors.primary}
+            />
+          </TouchableOpacity>
+        </View>
         <View style={styles.menuContainer}>
           {data.map(({ text, onPress }) => (
-            <TouchableOpacity
-              key={text}
-              onPress={onPress}
-              style={styles.menu}>
+            <TouchableOpacity key={text} onPress={onPress} style={styles.menu}>
               <Text style={styles.menuText}>{text}</Text>
               <Icon type="ionicons" name="md-arrow-dropright" size={25} />
             </TouchableOpacity>
           ))}
 
-          <TouchableOpacity
-            onPress={_deleteAccount}
-            style={styles.deleteContainer}>
-            <Text style={styles.deleteText}>Hesabı Sil</Text>
+          <TouchableOpacity onPress={_deleteAccount} style={styles.deleteContainer}>
+            <Text style={styles.deleteText}>{deleteAc}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -160,6 +222,7 @@ const styles = ScaledSheet.create({
     marginTop: '10@s',
     color: colors.secondary,
   },
+
   menuContainer: {
     marginTop: '30@s',
     width: '100%',
@@ -184,5 +247,22 @@ const styles = ScaledSheet.create({
   deleteText: {
     color: colors.danger,
     fontSize: '12@s',
+  },
+  aboutContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '10@s',
+  },
+  about: {
+    fontSize: '13@s',
+    textAlign: 'center',
+  },
+  aboutButton: {
+    height: '30@s',
+    width: '30@s',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: '-40@s',
   },
 });
