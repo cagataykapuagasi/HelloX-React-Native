@@ -12,10 +12,6 @@ export function deleteAccount() {
   return request('delete', 'user/profile');
 }
 
-export function getUsers() {
-  return request('get', 'user/all');
-}
-
 export function search(username) {
   return request('post', 'user/search', { username });
 }
@@ -29,4 +25,12 @@ export function updatePhoto(photo) {
     'Content-Type': 'multipart/form-data',
     Accept: 'multipart/form-data',
   });
+}
+
+export function updateAbout(about) {
+  return request('post', 'user/profile/update-about', { about });
+}
+
+export function updateLanguage(language) {
+  return request('post', 'user/profile/update-language', { language });
 }
