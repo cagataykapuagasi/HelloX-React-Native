@@ -148,7 +148,6 @@
 				54BD3BB65094F0D427DBD3A7 /* Pods-HelloXTests.debug.xcconfig */,
 				5562812CF35B9F1752991C42 /* Pods-HelloXTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -309,6 +308,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -684,7 +684,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hellox;
 				PRODUCT_NAME = HelloX;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -703,7 +703,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hellox;
 				PRODUCT_NAME = HelloX;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
