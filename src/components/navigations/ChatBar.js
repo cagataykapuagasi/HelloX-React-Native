@@ -2,10 +2,12 @@ import React, { useMemo } from 'react';
 import { View, Text, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { ScaledSheet } from 'react-native-size-matters';
 import Icon from '../Icon';
-import { images, fonts, colors } from 'res';
+import { images, languages } from 'res';
 import { Actions } from 'react-native-router-flux';
 import { inject, observer } from 'mobx-react';
 import FastImage from 'react-native-fast-image';
+
+const { dropdown1, online, offline } = languages.t('chatBar');
 
 const ChatBar = props => {
   const {
@@ -16,11 +18,11 @@ const ChatBar = props => {
     },
   } = props;
 
-  const data = [{ text: 'Delete', onPress: () => deleteRoom(id) }];
+  const data = [{ text: dropdown1, onPress: () => deleteRoom(id) }];
   const openDropdown = () => navStore.openDropDown(data, styles.dropdown);
 
   const userStatus = useMemo(
-    () => (currentUserStatus !== null ? (currentUserStatus ? 'Online' : 'Offline') : null),
+    () => (currentUserStatus !== null ? (currentUserStatus ? online : offline) : null),
     [currentUserStatus]
   );
 

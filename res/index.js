@@ -17,4 +17,8 @@ module.exports = {
   get fonts() {
     return require('./fonts').default;
   },
+
+  get languages() {
+    return require('./languages').default;
+  },
 };

@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { images, fonts, colors } from 'res';
-import { inject, observer } from 'mobx-react';
-import { ScaledSheet, scale } from 'react-native-size-matters';
+import React from 'react';
+import { View } from 'react-native';
+import { languages, colors } from 'res';
+import { ScaledSheet } from 'react-native-size-matters';
 import { TextInput, Form } from '~/components/form';
 import { Container, Button } from '~/components';
 import { User } from '../api';
@@ -11,6 +10,12 @@ import { Formik } from 'formik';
 import { changePasswordSchema } from '~/utils/validationSchema';
 import { showMessage } from 'react-native-flash-message';
 
+const { change_password } = languages.t('alerts');
+const {
+  labels: { password, new_password, new_password_confirmation },
+  button,
+} = languages.t('change_password');
+
 const initialValues = {
   password: '',
   new_password: '',
@@ -18,14 +23,11 @@ const initialValues = {
 };
 
 const ChangePassword = props => {
-  const change = (
-    { new_password_confirmation, ...form },
-    { setErrors, setSubmitting }
-  ) => {
+  const change = ({ new_password_confirmation, ...form }, { setErrors, setSubmitting }) => {
     User.updatePassword(form)
       .then(({ message }) => {
         showMessage({
-          message,
+          message: change_password,
           type: 'success',
         });
         Actions.pop();
@@ -45,17 +47,14 @@ const ChangePassword = props => {
           validationSchema={changePasswordSchema}>
           {({ handleSubmit, isSubmitting, isValid }) => (
             <Form style={styles.forms}>
-              <TextInput name="password" label="password" />
-              <TextInput name="new_password" label="new password" />
-              <TextInput
-                name="new_password_confirmation"
-                label="new password again"
-              />
+              <TextInput name="password" label={password} />
+              <TextInput name="new_password" label={new_password} />
+              <TextInput name="new_password_confirmation" label={new_password_confirmation} />
 
               <Button
                 horizontal
                 colors={colors.button}
-                text="Change"
+                text={button}
                 distance={50}
                 onPress={handleSubmit}
                 loading={isSubmitting}

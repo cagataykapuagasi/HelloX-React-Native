@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Animated, TouchableOpacity, Text } from 'react-native';
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Kohana } from 'react-native-textinput-effects';
-import { images, fonts, colors } from 'res';
+import { languages, colors } from 'res';
 import { ScaledSheet, scale } from 'react-native-size-matters';
 import { Icon } from '~/components';
 
+const { label, button } = languages.t('searchBar');
 const height = new Animated.Value(0);
 const width = new Animated.Value(0);
 const marginLeft = new Animated.Value(0);
@@ -38,7 +39,7 @@ const SearchBar = props => {
     <View style={styles.container}>
       <Kohana
         style={styles.input}
-        label={'Find Users'}
+        label={label}
         iconClass={FontAwesomeIcon}
         iconName={'search'}
         iconColor={colors.primary}
@@ -62,13 +63,8 @@ const SearchBar = props => {
               marginLeft,
             },
           ]}>
-          <Icon
-            type="fontawesome"
-            name="random"
-            size={20}
-            color={colors.background}
-          />
-          <Text style={styles.text}>Rand</Text>
+          <Icon type="fontawesome" name="random" size={20} color={colors.background} />
+          <Text style={styles.text}>{button}</Text>
         </Animated.View>
       </TouchableOpacity>
     </View>

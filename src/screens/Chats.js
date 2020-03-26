@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Image } from 'react-native';
-import { images, fonts, colors } from 'res';
+import { View, Text, TouchableOpacity, FlatList, Image } from 'react-native';
+import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
-import { Icon } from '~/components';
 import { toJS } from 'mobx';
 import { Actions } from 'react-native-router-flux';
 import moment from 'moment';
 
+const { empty } = languages.t('chats');
+
 @inject('store')
 @observer
 export default class Chats extends Component {
-  state = {};
-
   renderItem = ({ item: { user, messages, unRead } }) => {
     const length = messages.length;
 
@@ -51,7 +50,7 @@ export default class Chats extends Component {
 
   ListFooterComponent = () => <View style={styles.footer} />;
 
-  ListEmptyComponent = () => <Text style={styles.emptyText}>Henüz hiç mesajlaşma yok.</Text>;
+  ListEmptyComponent = () => <Text style={styles.emptyText}>{empty}</Text>;
 
   render() {
     const {

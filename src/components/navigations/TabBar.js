@@ -1,20 +1,14 @@
 import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Dimensions,
-  Animated,
-  SafeAreaView,
-} from 'react-native';
-import { images, fonts, colors } from 'res';
+import { View, Text, TouchableOpacity, Dimensions, Animated, SafeAreaView } from 'react-native';
+import { languages, colors } from 'res';
 import { ScaledSheet } from 'react-native-size-matters';
 import { Actions } from 'react-native-router-flux';
 import { observer, inject } from 'mobx-react';
 import { Icon } from '~/components';
 
+const { tab1, tab2, dropdown1, dropdown2 } = languages.t('tabBar');
 const { width, height } = Dimensions.get('window');
-const tabs = ['ANASAYFA', 'SOHBETLER'];
+const tabs = [tab1, tab2];
 const tabWidth = width / tabs.length;
 const animatedBar = new Animated.Value(0);
 
@@ -42,8 +36,8 @@ const TabBar = props => {
   };
 
   const data = [
-    { text: 'Settings', onPress: () => Actions.settings() },
-    { text: 'Sign Out', onPress: () => logOut() },
+    { text: dropdown1, onPress: () => Actions.settings() },
+    { text: dropdown2, onPress: () => logOut() },
   ];
 
   const openDropdown = () => openDropDown(data);
@@ -52,20 +46,12 @@ const TabBar = props => {
     <SafeAreaView style={styles.container}>
       <View style={styles.head}>
         <TouchableOpacity onPress={openDropdown} style={styles.settings}>
-          <Icon
-            type="fontawesome"
-            name="ellipsis-v"
-            size={20}
-            color={colors.background}
-          />
+          <Icon type="fontawesome" name="ellipsis-v" size={20} color={colors.background} />
         </TouchableOpacity>
       </View>
       <View style={styles.tab}>
         {props.navigationState.routes.map(({ key }, index) => (
-          <TouchableOpacity
-            key={key}
-            onPress={() => navigate(key)}
-            style={styles.button}>
+          <TouchableOpacity key={key} onPress={() => navigate(key)} style={styles.button}>
             <Text
               style={[
                 styles.text,
@@ -78,12 +64,7 @@ const TabBar = props => {
           </TouchableOpacity>
         ))}
 
-        <Animated.View
-          style={[
-            styles.bar,
-            { transform: [{ translateX: animatedBar }] },
-          ]}
-        />
+        <Animated.View style={[styles.bar, { transform: [{ translateX: animatedBar }] }]} />
       </View>
     </SafeAreaView>
   );

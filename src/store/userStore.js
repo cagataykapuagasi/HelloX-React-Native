@@ -4,6 +4,9 @@ import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { setToken } from '../api/Client';
 import { showMessage } from 'react-native-flash-message';
+import { languages } from 'res';
+
+const { userStore } = languages.t('alerts');
 
 export default class UserStore {
   @observable user = { profile: null, token: null, refresh_token: null };
@@ -40,6 +43,12 @@ export default class UserStore {
     this.user.profile = user;
     this.user.token = token;
     setToken(token);
+    const { locale } = languages;
+    const { language } = this.user.profile;
+
+    if (language !== locale) {
+      User.updateLanguage(locale).then(r => (language = locale));
+    }
 
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
@@ -50,6 +59,11 @@ export default class UserStore {
   };
 
   @action
+  updateProfileAbout = about => {
+    this.user.profile.about = about;
+  };
+
+  @action
   deleteAccount = () => {
     User.deleteAccount()
       .then(() => {
@@ -57,7 +71,7 @@ export default class UserStore {
       })
       .catch(() => {
         showMessage({
-          message: "Something went wrong. We couldn't delete your account.",
+          message: userStore,
           type: 'danger',
         });
       });

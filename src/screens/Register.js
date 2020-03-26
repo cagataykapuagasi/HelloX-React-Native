@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { images, fonts, colors } from 'res';
+import { colors, languages } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet, scale } from 'react-native-size-matters';
 import { TextInput, Form } from '~/components/form';
@@ -19,13 +19,13 @@ const initialValues = {
   password_confirmation: '',
 };
 
-//test@gmail.com
+const {
+  labels: { username, email, password, password_confirmation },
+  button,
+} = languages.t('register');
 
 const Register = props => {
-  const register = (
-    { password_confirmation, ...form },
-    { setErrors, setSubmitting }
-  ) => {
+  const register = ({ password_confirmation, ...form }, { setErrors, setSubmitting }) => {
     const {
       userStore: { setUser },
       chatStore: { init },
@@ -45,24 +45,18 @@ const Register = props => {
   return (
     <Container colors={colors.auth} style={styles.container}>
       <View style={styles.textContainer}>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={register}
-          validationSchema={registerSchema}>
+        <Formik initialValues={initialValues} onSubmit={register} validationSchema={registerSchema}>
           {({ handleSubmit, isSubmitting, isValid }) => (
             <Form style={styles.forms}>
-              <TextInput name="username" label="username" />
-              <TextInput name="email" label="email" />
-              <TextInput name="password" label="password" />
-              <TextInput
-                name="password_confirmation"
-                label="password again"
-              />
+              <TextInput name="username" label={username} />
+              <TextInput name="email" label={email} />
+              <TextInput name="password" label={password} />
+              <TextInput name="password_confirmation" label={password_confirmation} />
 
               <Button
                 horizontal
                 colors={colors.button}
-                text="Register"
+                text={button}
                 distance={50}
                 onPress={handleSubmit}
                 loading={isSubmitting}

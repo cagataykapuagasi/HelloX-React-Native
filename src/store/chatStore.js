@@ -32,7 +32,6 @@ export default class chatStore {
     });
 
     _io.on('connect', async () => {
-      console.warn('chat init', _io.connected);
       this.connected = _io.connected;
       socket = _io.connect();
 
@@ -47,7 +46,6 @@ export default class chatStore {
 
     _io.on('disconnect', e => {
       this.connected = false;
-      console.log('disconnect', e);
     });
   };
 
@@ -63,7 +61,6 @@ export default class chatStore {
     socket.emit('subscribe', id);
 
     _io.on('subscribelisten', status => {
-      console.warn('subscribe', status);
       this.currentUserStatus = status;
     });
   };
@@ -72,7 +69,6 @@ export default class chatStore {
     if (!this.connected || !socket) {
       return;
     }
-    console.warn('unsubscribe');
     socket.emit('unsubscribe', id);
     this.currentUserStatus = null;
     _io.off('subscribelisten');

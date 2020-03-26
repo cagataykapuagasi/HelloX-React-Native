@@ -1,19 +1,21 @@
 import React, { Component } from 'react';
 import { StyleSheet, StatusBar, View } from 'react-native';
-import { Scene, Modal, Router, Actions, Stack, Tabs } from 'react-native-router-flux';
+import { Scene, Router, Actions, Stack, Tabs } from 'react-native-router-flux';
 import { Provider } from 'mobx-react';
 import { Home, Login, Chat, Chats, Register, Settings, ChangePassword } from './src/screens';
-import { colors } from 'res';
+import { colors, languages } from 'res';
 import RNBootSplash from 'react-native-bootsplash';
 import { store } from './src/store';
 import { ChatBar, TabBar, BackButton } from './src/components/navigations';
 import DropDown from '~/components/drowdown';
 import FlashMessage from 'react-native-flash-message';
 
-export default class App extends Component {
-  componentDidMount() {
-    console.log('app js', store);
+const { login, register, settings, change_password } = languages.t('app');
 
+export default class App extends Component {
+  state = { backgroundColor: colors.secondary };
+
+  componentDidMount() {
     store
       .init()
       .then(() => {
@@ -25,7 +27,7 @@ export default class App extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content" />
+        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
         <Provider store={store}>
           <View onTouchStart={store.navStore.hideDropDown} style={styles.container}>
             <Router
@@ -36,24 +38,24 @@ export default class App extends Component {
               headerTintColor={colors.headerTint}>
               <Stack hideNavBar key="root">
                 <Stack type="replace" key="login">
-                  <Scene component={Login} initial navTransparent title="Login" />
+                  <Scene component={Login} initial navTransparent title={login} />
                 </Stack>
 
-                <Stack navTransparent key="register" title="Register">
+                <Stack navTransparent key="register" title={register}>
                   <Scene renderBackButton={BackButton} component={Register} />
                 </Stack>
 
                 <Tabs
-                  indicatorStyle={{ backgroundColor: 'white' }}
-                  labelStyle={{ fontWeight: 'bold' }}
+                  indicatorStyle={styles.indicatorStyle}
+                  labelStyle={styles.labelStyle}
                   tabBarStyle={styles.tab}
                   tabBarPosition="top"
                   tabBarComponent={TabBar}
                   hideNavBar
                   type="reset"
                   key="home">
-                  <Scene hideNavBar component={Home} tabBarLabel="AnaSayfa" key="home_0" />
-                  <Scene hideNavBar component={Chats} tabBarLabel="Sohbetler" key="home_1" />
+                  <Scene hideNavBar component={Home} key="home_0" />
+                  <Scene hideNavBar component={Chats} key="home_1" />
                 </Tabs>
 
                 <Stack navBar={ChatBar} key="chat">
@@ -63,7 +65,7 @@ export default class App extends Component {
                   <Scene
                     component={Settings}
                     renderBackButton={BackButton}
-                    title="Settings"
+                    title={settings}
                     navigationBarStyle={styles.navigationBarStyle}
                   />
                 </Stack>
@@ -71,7 +73,7 @@ export default class App extends Component {
                   <Scene
                     component={ChangePassword}
                     renderBackButton={BackButton}
-                    title="Change Password"
+                    title={change_password}
                     navigationBarStyle={styles.navigationBarStyle}
                   />
                 </Stack>
@@ -107,5 +109,11 @@ const styles = StyleSheet.create({
   navigationBarStyle: {
     backgroundColor: colors.primary,
     borderBottomWidth: 0,
+  },
+  indicatorStyle: {
+    backgroundColor: 'white',
+  },
+  labelStyle: {
+    fontWeight: 'bold',
   },
 });

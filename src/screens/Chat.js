@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
-import { images, fonts, colors } from 'res';
+import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { toJS } from 'mobx';
 import Icon from '~/components/Icon';
 import moment from 'moment';
+
+const { placeholder, placeholderError } = languages.t('chat');
 
 @inject('store')
 @observer
@@ -102,7 +104,7 @@ export default class Chat extends Component {
             value={message}
             onChangeText={message => this.setState({ message })}
             style={styles.input}
-            placeholder={connected ? 'Bir Mesaj Yaz' : 'Sohbete bağlanılmaya çalışılıyor...'}
+            placeholder={connected ? placeholder : placeholderError}
             editable={connected}
             multiline
           />
@@ -159,8 +161,9 @@ const styles = ScaledSheet.create({
     flex: 1,
     borderRadius: '22.5@s',
     paddingHorizontal: 20,
-    fontSize: '14@s',
+    fontSize: '13@s',
     backgroundColor: colors.background,
+    paddingTop: '14@s',
   },
   buttonText: {
     color: colors.background,

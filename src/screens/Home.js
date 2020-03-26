@@ -2,22 +2,24 @@ import React, { Component } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   FlatList,
-  Image,
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import { images, fonts, colors } from 'res';
+import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { Icon, SearchBar } from '~/components';
 import { User } from '~/api';
 import { Actions } from 'react-native-router-flux';
 import FastImage from 'react-native-fast-image';
+import { showMessage } from 'react-native-flash-message';
 
 const { width } = Dimensions.get('window');
+
+const { empty } = languages.t('home');
+const { home } = languages.t('alerts');
 
 @inject('store')
 @observer
@@ -67,7 +69,7 @@ export default class Home extends Component {
     this.timeout = setTimeout(() => {
       User.search(text)
         .then(users => this.setState({ users, loading: false }))
-        .catch(e => console.log(e));
+        .catch(e => showMessage({ type: 'danger', message: home }));
     }, 500);
   };
 
@@ -94,7 +96,7 @@ export default class Home extends Component {
         <View style={styles.usernameView}>
           <Text style={styles.username}>{username}</Text>
           <Text numberOfLines={1} style={styles.status}>
-            {about ? about : 'Durum yok'}
+            {about}
           </Text>
         </View>
       </TouchableOpacity>
@@ -103,9 +105,7 @@ export default class Home extends Component {
 
   ListFooterComponent = () => (
     <View style={styles.footer}>
-      {this.state.loading && (
-        <ActivityIndicator style={styles.indicator} />
-      )}
+      {this.state.loading && <ActivityIndicator style={styles.indicator} />}
     </View>
   );
 
@@ -117,9 +117,7 @@ export default class Home extends Component {
     />
   );
 
-  ListEmptyComponent = () => (
-    <Text style={styles.emptyText}>Kullanıcı bulunamadı.</Text>
-  );
+  ListEmptyComponent = () => <Text style={styles.emptyText}>{empty}</Text>;
 
   keyExtractor = (item, index) => 'id' + index;
 

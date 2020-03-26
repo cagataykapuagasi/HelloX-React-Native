@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { images, fonts, colors } from 'res';
+import { colors, languages } from 'res';
 import { inject, observer } from 'mobx-react';
-import { ScaledSheet, scale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
 import { TextInput, Form } from '~/components/form';
 import { Container, Button } from '~/components';
 import { Auth } from '../api';
@@ -11,6 +11,11 @@ import { Formik } from 'formik';
 import { loginSchema } from '~/utils/validationSchema';
 
 const initialValues = { username: '', password: '' };
+const {
+  labels: { username, password },
+  button,
+  register,
+} = languages.t('login');
 
 const Login = props => {
   const login = (form, { setErrors, setSubmitting }) => {
@@ -33,25 +38,22 @@ const Login = props => {
   return (
     <Container colors={colors.auth} style={styles.container}>
       <View style={styles.textContainer}>
-        <Formik
-          initialValues={initialValues}
-          onSubmit={login}
-          validationSchema={loginSchema}>
+        <Formik initialValues={initialValues} onSubmit={login} validationSchema={loginSchema}>
           {({ handleSubmit, isSubmitting, isValid }) => (
             <Form style={styles.forms}>
-              <TextInput name="username" label="username" />
-              <TextInput name="password" label="password" />
+              <TextInput name="username" label={username} />
+              <TextInput name="password" label={password} />
 
               <View style={styles.register}>
                 <TouchableOpacity onPress={Actions.register}>
-                  <Text style={styles.registerText}>Register</Text>
+                  <Text style={styles.registerText}>{register}</Text>
                 </TouchableOpacity>
               </View>
 
               <Button
                 horizontal
                 colors={colors.button}
-                text="Login"
+                text={button}
                 distance={50}
                 onPress={handleSubmit}
                 loading={isSubmitting}

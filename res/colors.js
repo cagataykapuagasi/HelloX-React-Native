@@ -35,5 +35,6 @@ const colors = {
   button: ['#fc6b3b', '#f96331', '#f95a25'],
   auth: ['#128C7E', '#128C7E', '#075E54'],
   danger: '#cf283a',
+  black: '#000000',
 };
 export default colors;
