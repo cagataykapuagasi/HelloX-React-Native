@@ -1,4 +1,4 @@
-# Foobar
+# HelloX
 
 HelloX is a React Native app for chating.
 
