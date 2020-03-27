@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, Dimensions } from 'react-native';
 import { colors, languages } from 'res';
 import { inject, observer } from 'mobx-react';
-import { ScaledSheet, scale } from 'react-native-size-matters';
+import { ScaledSheet } from 'react-native-size-matters';
 import { TextInput, Form } from '~/components/form';
 import { Container, Button } from '~/components';
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome';
 import { Auth } from '../api';
 import { Actions } from 'react-native-router-flux';
 import { Formik } from 'formik';
 import { registerSchema } from '~/utils/validationSchema';
 import { handleRegisterErrors } from '~/utils/handleErrors';
+
+const { height } = Dimensions.get('window');
 
 const initialValues = {
   username: '',
@@ -33,7 +34,6 @@ const Register = props => {
     Auth.register(form)
       .then(res => {
         setUser(res);
-        init();
         Actions.home();
       })
       .catch(({ error }) => {
@@ -44,7 +44,7 @@ const Register = props => {
 
   return (
     <Container colors={colors.auth} style={styles.container}>
-      <View style={styles.textContainer}>
+      <ScrollView>
         <Formik initialValues={initialValues} onSubmit={register} validationSchema={registerSchema}>
           {({ handleSubmit, isSubmitting, isValid }) => (
             <Form style={styles.forms}>
@@ -65,7 +65,7 @@ const Register = props => {
             </Form>
           )}
         </Formik>
-      </View>
+      </ScrollView>
     </Container>
   );
 };
@@ -75,9 +75,8 @@ export default inject('store')(observer(Register));
 const styles = ScaledSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     backgroundColor: colors.primary,
-    paddingTop: '50@s',
+    paddingHorizontal: '20@s',
   },
   labelStyle: {
     fontWeight: 'normal',
@@ -87,6 +86,10 @@ const styles = ScaledSheet.create({
     fontSize: '14@s',
   },
   textContainer: {
-    paddingHorizontal: '20@s',
+    flex: 1,
+  },
+  forms: {
+    height,
+    justifyContent: 'center',
   },
 });

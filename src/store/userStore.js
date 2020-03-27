@@ -31,7 +31,6 @@ export default class UserStore {
           this.user.token = token;
         });
 
-      await this.store.chatStore.init(token);
       return Promise.resolve();
     }
 
@@ -50,6 +49,7 @@ export default class UserStore {
       User.updateLanguage(locale).then(r => (language = locale));
     }
 
+    this.store.chatStore.init(token);
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
 

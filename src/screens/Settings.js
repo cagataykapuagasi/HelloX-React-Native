@@ -11,12 +11,9 @@ import {
 } from 'react-native';
 import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
-import { ScaledSheet, scale } from 'react-native-size-matters';
-import { Form } from '~/components/form';
-import { Container, Icon, LoadingIcon } from '~/components';
+import { ScaledSheet } from 'react-native-size-matters';
+import { Icon, LoadingIcon } from '~/components';
 import { Actions } from 'react-native-router-flux';
-import { Formik } from 'formik';
-import { loginSchema } from '~/utils/validationSchema';
 import ImagePicker from 'react-native-image-picker';
 import { updatePhoto, updateAbout } from '~/api/User';
 import { showMessage } from 'react-native-flash-message';

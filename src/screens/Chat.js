@@ -1,6 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
-import { images, languages, colors } from 'res';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { toJS } from 'mobx';
@@ -89,30 +97,36 @@ export default class Chat extends Component {
     } = this;
 
     return (
-      <View style={styles.container}>
-        <FlatList
-          inverted
-          data={toJS(getRoom(item)).reverse()}
-          renderItem={this.renderItem}
-          style={styles.flatlist}
-          keyExtractor={this.keyExtractor}
-          ListHeaderComponent={this.ListHeaderComponent}
-        />
-
-        <View style={styles.footer}>
-          <TextInput
-            value={message}
-            onChangeText={message => this.setState({ message })}
-            style={styles.input}
-            placeholder={connected ? placeholder : placeholderError}
-            editable={connected}
-            multiline
+      <KeyboardAvoidingView
+        enabled={Platform.OS === 'ios'}
+        keyboardVerticalOffset={75}
+        style={styles.container}
+        behavior="padding">
+        <View style={styles.container}>
+          <FlatList
+            inverted
+            data={toJS(getRoom(item)).reverse()}
+            renderItem={this.renderItem}
+            style={styles.flatlist}
+            keyExtractor={this.keyExtractor}
+            ListHeaderComponent={this.ListHeaderComponent}
           />
-          <TouchableOpacity style={styles.footerButton} onPress={this.sendMessage}>
-            <Icon type="material" name="send" size={20} color={colors.background} />
-          </TouchableOpacity>
+
+          <View style={styles.footer}>
+            <TextInput
+              value={message}
+              onChangeText={message => this.setState({ message })}
+              style={styles.input}
+              placeholder={connected ? placeholder : placeholderError}
+              editable={connected}
+              multiline
+            />
+            <TouchableOpacity style={styles.footerButton} onPress={this.sendMessage}>
+              <Icon type="material" name="send" size={20} color={colors.background} />
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

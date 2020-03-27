@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { colors, languages } from 'res';
 import { inject, observer } from 'mobx-react';
@@ -26,7 +26,6 @@ const Login = props => {
     Auth.login(form)
       .then(res => {
         setUser(res);
-        init();
         Actions.home();
       })
       .catch(({ error }) => {
@@ -37,32 +36,30 @@ const Login = props => {
 
   return (
     <Container colors={colors.auth} style={styles.container}>
-      <View style={styles.textContainer}>
-        <Formik initialValues={initialValues} onSubmit={login} validationSchema={loginSchema}>
-          {({ handleSubmit, isSubmitting, isValid }) => (
-            <Form style={styles.forms}>
-              <TextInput name="username" label={username} />
-              <TextInput name="password" label={password} />
+      <Formik initialValues={initialValues} onSubmit={login} validationSchema={loginSchema}>
+        {({ handleSubmit, isSubmitting, isValid }) => (
+          <Form style={styles.forms}>
+            <TextInput name="username" label={username} />
+            <TextInput name="password" label={password} />
 
-              <View style={styles.register}>
-                <TouchableOpacity onPress={Actions.register}>
-                  <Text style={styles.registerText}>{register}</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.register}>
+              <TouchableOpacity onPress={Actions.register}>
+                <Text style={styles.registerText}>{register}</Text>
+              </TouchableOpacity>
+            </View>
 
-              <Button
-                horizontal
-                colors={colors.button}
-                text={button}
-                distance={50}
-                onPress={handleSubmit}
-                loading={isSubmitting}
-                disabled={isSubmitting || !isValid}
-              />
-            </Form>
-          )}
-        </Formik>
-      </View>
+            <Button
+              horizontal
+              colors={colors.button}
+              text={button}
+              distance={50}
+              onPress={handleSubmit}
+              loading={isSubmitting}
+              disabled={isSubmitting || !isValid}
+            />
+          </Form>
+        )}
+      </Formik>
     </Container>
   );
 };
@@ -74,7 +71,7 @@ const styles = ScaledSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: colors.primary,
-    paddingTop: '50@s',
+    paddingHorizontal: '20@s',
   },
   labelStyle: {
     fontWeight: 'normal',
@@ -83,9 +80,7 @@ const styles = ScaledSheet.create({
   inputStyle: {
     fontSize: '14@s',
   },
-  textContainer: {
-    paddingHorizontal: '20@s',
-  },
+  textContainer: {},
   register: {
     top: '5@s',
     justifyContent: 'center',
@@ -95,5 +90,9 @@ const styles = ScaledSheet.create({
     fontSize: '11@s',
     fontWeight: 'bold',
     color: 'white',
+  },
+  forms: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });

@@ -39,7 +39,7 @@ const ChangePassword = props => {
   };
 
   return (
-    <Container colors={colors.auth} style={styles.container}>
+    <Container vertical={50} colors={colors.auth} style={styles.container}>
       <View style={styles.textContainer}>
         <Formik
           initialValues={initialValues}
@@ -75,7 +75,6 @@ const styles = ScaledSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: colors.primary,
-    paddingTop: '50@s',
   },
   labelStyle: {
     fontWeight: 'normal',

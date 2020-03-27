@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { ScaledSheet, verticalScale, scale } from 'react-native-size-matters';
 import Spinner from 'react-native-spinkit';
