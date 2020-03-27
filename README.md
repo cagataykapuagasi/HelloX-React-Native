@@ -1,6 +1,6 @@
 # HelloX
 
-HelloX is a React Native app for chating.
+HelloX is a React-Native app for chating.
 
 ## Installation
 
