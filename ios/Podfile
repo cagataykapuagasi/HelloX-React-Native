@@ -37,8 +37,7 @@ target 'HelloX' do
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways.podspec"
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse.podspec"
-  pod 'react-native-geolocation', path: '../node_modules/@react-native-community/geolocation'
-
+  
   target 'HelloXTests' do
     inherit! :search_paths
     # Pods for testing

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "7296306599",
+    "firebase_url": "https://hellox-29780.firebaseio.com",
+    "project_id": "hellox-29780",
+    "storage_bucket": "hellox-29780.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7296306599:android:27ba0140ad90a80670fa82",
+        "android_client_info": {
+          "package_name": "com.hellox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7296306599-j0njsjeak8hfb033r6cj55iu6dlhhskc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDssvljSIG_32ZYxoEKTd_vbgX4pGdzC54"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7296306599-j0njsjeak8hfb033r6cj55iu6dlhhskc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
