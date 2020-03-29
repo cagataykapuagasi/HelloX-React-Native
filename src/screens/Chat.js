@@ -55,7 +55,7 @@ export default class Chat extends Component {
     const {
       props: {
         store: {
-          chatStore: { sendMessage, init },
+          chatStore: { sendMessage },
         },
         item: { id, profile_photo },
       },

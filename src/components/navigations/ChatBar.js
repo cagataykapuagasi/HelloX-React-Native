@@ -25,8 +25,16 @@ const ChatBar = props => {
   useEffect(
     () =>
       Animated.parallel([
-        Animated.timing(translateY, { duration: 500, toValue: scale(userStatus ? -8 : 0) }),
-        Animated.timing(opacity, { duration: 500, toValue: userStatus ? 1 : 0 }),
+        Animated.timing(translateY, {
+          duration: 500,
+          toValue: scale(userStatus ? -8 : 0),
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacity, {
+          duration: 500,
+          toValue: userStatus ? 1 : 0,
+          useNativeDriver: true,
+        }),
       ]).start(),
     [userStatus]
   );
@@ -72,10 +80,9 @@ const styles = ScaledSheet.create({
     paddingTop: '2@s',
   },
   photo: {
-    height: '30@s',
-    width: '30@s',
-    borderRadius: '15@s',
-    marginLeft: '5@s',
+    height: '35@s',
+    width: '35@s',
+    borderRadius: '17.5@s',
   },
   name: {
     color: 'white',
@@ -92,6 +99,7 @@ const styles = ScaledSheet.create({
   box1: {
     alignItems: 'center',
     flexDirection: 'row',
+    flex: 1,
   },
   status: {
     color: 'white',
