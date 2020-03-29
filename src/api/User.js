@@ -34,3 +34,7 @@ export function updateAbout(about) {
 export function updateLanguage(language) {
   return request('post', 'user/profile/update-language', { language });
 }
+
+export function postFCM(fcm) {
+  return request('post', 'user/fcm', { fcm });
+}

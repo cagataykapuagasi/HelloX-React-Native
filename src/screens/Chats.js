@@ -6,6 +6,7 @@ import { ScaledSheet } from 'react-native-size-matters';
 import { toJS } from 'mobx';
 import { Actions } from 'react-native-router-flux';
 import moment from 'moment';
+import { Avatar } from '~/components';
 
 const { empty } = languages.t('chats');
 
@@ -15,11 +16,9 @@ export default class Chats extends Component {
   renderItem = ({ item: { user, messages, unRead } }) => {
     const length = messages.length;
 
-    const source = user.profile_photo ? { uri: user.profile_photo } : images.user;
-
     return (
       <TouchableOpacity onPress={() => Actions.chat({ item: user })} style={styles.card}>
-        <Image style={styles.photo} source={source} />
+        <Avatar style={styles.photo} uri={user.profile_photo} />
         <View style={styles.card2}>
           <View style={styles.card2_1}>
             <Text style={styles.username}>{user.username}</Text>

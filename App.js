@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, StatusBar, View } from 'react-native';
-import { Scene, Router, Actions, Stack, Tabs } from 'react-native-router-flux';
+import { Scene, Router, Stack, Tabs } from 'react-native-router-flux';
 import { Provider } from 'mobx-react';
 import { Home, Login, Chat, Chats, Register, Settings, ChangePassword } from './src/screens';
 import { colors, languages } from 'res';
@@ -16,12 +16,7 @@ export default class App extends Component {
   state = { backgroundColor: colors.secondary };
 
   componentDidMount() {
-    store
-      .init()
-      .then(() => {
-        Actions.replace('home');
-      })
-      .finally(() => RNBootSplash.hide({ duration: 250 }));
+    store.init();
   }
 
   render() {

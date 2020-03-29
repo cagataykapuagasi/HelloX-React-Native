@@ -93,7 +93,7 @@ export default class chatStore {
     this.addNewMessage({ type: 'sent', ...newMessage });
   };
 
-  saveRooms = () => AsyncStorage.setItem('rooms', JSON.stringify(this.rooms));
+  saveRooms = async () => await AsyncStorage.setItem('rooms', JSON.stringify(this.rooms));
 
   @action
   addNewMessage = ({ recipientId, username, profile_photo, ...other }) => {

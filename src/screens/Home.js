@@ -10,10 +10,9 @@ import {
 import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
-import { Icon, SearchBar } from '~/components';
+import { Avatar, SearchBar } from '~/components';
 import { User } from '~/api';
 import { Actions } from 'react-native-router-flux';
-import FastImage from 'react-native-fast-image';
 import { showMessage } from 'react-native-flash-message';
 
 const { width } = Dimensions.get('window');
@@ -82,7 +81,6 @@ export default class Home extends Component {
   renderItem = ({ item }) => {
     const { profile_photo, username, status, about } = item;
 
-    const source = profile_photo ? { uri: profile_photo } : images.user;
     return (
       <TouchableOpacity
         onPress={() => this.openChatScreen(item)}
@@ -92,7 +90,7 @@ export default class Home extends Component {
             borderBottomColor: colors[status ? 'online' : 'offline'],
           },
         ]}>
-        <FastImage style={styles.photo} source={source} />
+        <Avatar uri={profile_photo} style={styles.photo} />
         <View style={styles.usernameView}>
           <Text style={styles.username}>{username}</Text>
           <Text numberOfLines={1} style={styles.status}>

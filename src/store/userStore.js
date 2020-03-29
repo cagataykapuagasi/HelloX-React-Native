@@ -1,10 +1,11 @@
 import { observable, action } from 'mobx';
-import { Auth, User } from '../api';
+import { User } from '../api';
 import { Actions } from 'react-native-router-flux';
 import AsyncStorage from '@react-native-community/async-storage';
 import { setToken } from '../api/Client';
 import { showMessage } from 'react-native-flash-message';
 import { languages } from 'res';
+import messaging from '@react-native-firebase/messaging';
 
 const { userStore } = languages.t('alerts');
 
@@ -39,17 +40,19 @@ export default class UserStore {
 
   @action
   setUser = async ({ user, token }) => {
+    const { chatStore, notificationStore } = this.store;
     this.user.profile = user;
     this.user.token = token;
     setToken(token);
-    const { locale } = languages;
-    const { language } = this.user.profile;
 
+    const { language } = this.user.profile;
+    const { locale } = languages;
     if (language !== locale) {
       User.updateLanguage(locale).then(r => (language = locale));
     }
 
-    this.store.chatStore.init(token);
+    chatStore.init(token);
+    notificationStore.init();
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
 
@@ -79,10 +82,19 @@ export default class UserStore {
 
   @action
   logOut = async () => {
+    let {
+      user: { profile, token },
+      store: {
+        chatStore: { rooms, disconnect },
+      },
+    } = this;
     await AsyncStorage.removeItem('user');
+    await AsyncStorage.removeItem('rooms');
+    await messaging().deleteToken();
     Actions.login();
-    this.user.profile = null;
-    this.user.token = null;
-    this.store.chatStore.disconnect();
+    profile = null;
+    token = null;
+    rooms = {};
+    disconnect();
   };
 }

@@ -12,7 +12,7 @@ import {
 import { images, languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
-import { Icon, LoadingIcon } from '~/components';
+import { Icon, LoadingIcon, Avatar } from '~/components';
 import { Actions } from 'react-native-router-flux';
 import ImagePicker from 'react-native-image-picker';
 import { updatePhoto, updateAbout } from '~/api/User';
@@ -120,13 +120,11 @@ const Settings = props => {
     setAboutLoading(false);
   };
 
-  const source = profile_photo ? { uri: profile_photo } : images.user;
-
   return (
     <ScrollView style={styles.scroll}>
       <View style={styles.container}>
         <View style={styles.photoContainer}>
-          <FastImage onError={onError} source={source} style={styles.photo} />
+          <Avatar uri={profile_photo} style={styles.photo} />
           <TouchableOpacity disabled={photoLoading} onPress={selectImage} style={styles.select}>
             <LoadingIcon
               loading={photoLoading}
