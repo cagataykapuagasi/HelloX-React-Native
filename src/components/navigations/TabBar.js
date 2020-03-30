@@ -25,6 +25,10 @@ const TabBar = props => {
   };
 
   const animate = key => {
+    if (!['home_0', 'home_1'].includes(currentScreen)) {
+      return;
+    }
+
     const index = currentScreen.substr(-1);
     const toValue = tabWidth * index;
 
