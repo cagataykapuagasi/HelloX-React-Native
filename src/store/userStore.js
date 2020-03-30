@@ -5,9 +5,13 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { setToken } from '../api/Client';
 import { showMessage } from 'react-native-flash-message';
 import { languages } from 'res';
-import messaging from '@react-native-firebase/messaging';
+import firebase from 'react-native-firebase';
+import { Alert } from 'react-native';
 
-const { userStore } = languages.t('alerts');
+const {
+  userStore,
+  logOut: { title, text, buttons },
+} = languages.t('alerts');
 
 export default class UserStore {
   @observable user = { profile: null, token: null, refresh_token: null };
@@ -36,6 +40,13 @@ export default class UserStore {
     }
 
     return Promise.reject();
+  };
+
+  @action
+  initWithNotification = async () => {
+    const { profile, token } = JSON.parse(await AsyncStorage.getItem('user'));
+    this.user.profile = profile;
+    this.user.token = token;
   };
 
   @action
@@ -80,21 +91,25 @@ export default class UserStore {
       });
   };
 
-  @action
   logOut = async () => {
-    let {
-      user: { profile, token },
-      store: {
-        chatStore: { rooms, disconnect },
+    Alert.alert(title, text, [
+      {
+        text: buttons.yes,
+        onPress: () => this._logOut(),
       },
-    } = this;
+      { text: buttons.no, style: 'cancel' },
+    ]);
+  };
+
+  @action
+  _logOut = async () => {
+    const { disconnect, deleteRooms } = this.store.chatStore;
     await AsyncStorage.removeItem('user');
-    await AsyncStorage.removeItem('rooms');
-    await messaging().deleteToken();
+    await firebase.messaging().deleteToken();
     Actions.login();
-    profile = null;
-    token = null;
-    rooms = {};
+    this.profile = null;
+    this.token = null;
+    deleteRooms();
     disconnect();
   };
 }

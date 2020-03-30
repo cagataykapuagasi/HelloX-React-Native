@@ -42,7 +42,7 @@ export default {
     empty: 'No message yet.',
   },
   chat: {
-    placeholder: 'Write a message',
+    placeholder: 'Type a message',
     placeholderError: 'Trying to connect to chat...',
   },
   tabBar: {
@@ -63,7 +63,7 @@ export default {
   alerts: {
     settings: {
       delete: {
-        title: 'Are you sure?',
+        title: 'Delete account',
         text: 'Your account will be deleted',
         buttons: { yes: 'Yes', no: 'No' },
       },
@@ -75,5 +75,10 @@ export default {
     clientMessage:
       "Something went wrong. We couldn't access to the server. Please try again later.",
     userStore: "Something went wrong. We couldn't delete your account.",
+    logOut: {
+      title: 'Sign out',
+      text: 'Your messages will be deleted',
+      buttons: { yes: 'Yes', no: 'No' },
+    },
   },
 };

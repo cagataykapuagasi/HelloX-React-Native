@@ -63,7 +63,7 @@ export default {
   alerts: {
     settings: {
       delete: {
-        title: 'Emin misiniz?',
+        title: 'Hesabı sil',
         text: 'Hesabınız silinecek',
         buttons: { yes: 'Evet', no: 'Hayır' },
       },
@@ -75,5 +75,10 @@ export default {
     clientMessage:
       'Bir şeyler yanlış gitti. Sunucuya erişemedik, lütfen daha sonra tekrar deneyin.',
     userStore: 'Bir şeyler yanlış gitti. Hesabınızı silemedik.',
+    logOut: {
+      title: 'Çıkış Yap',
+      text: 'Mesajlarınız silinecek',
+      buttons: { yes: 'Evet', no: 'Hayır' },
+    },
   },
 };
