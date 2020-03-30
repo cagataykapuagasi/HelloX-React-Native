@@ -106,14 +106,10 @@ export default class Chat extends Component {
       return;
     }
 
-    if (height > currentContentHeight && currentContentHeight / firstContentHeight < 5) {
+    if (height > currentContentHeight && height / firstContentHeight < 6) {
       this.contentHeight += 20;
       this.animate(this.contentHeight);
-    } else if (
-      height < currentContentHeight &&
-      currentContentHeight > firstContentHeight &&
-      currentContentHeight / firstContentHeight < 6
-    ) {
+    } else if (height < currentContentHeight && height / firstContentHeight < 5) {
       this.contentHeight -= 20;
       this.animate(this.contentHeight);
     }

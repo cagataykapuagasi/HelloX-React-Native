@@ -26,7 +26,7 @@ const ChatBar = props => {
     () =>
       Animated.parallel([
         Animated.timing(translateY, {
-          duration: 500,
+          duration: 300,
           toValue: scale(userStatus ? -8 : 0),
           useNativeDriver: true,
         }),
