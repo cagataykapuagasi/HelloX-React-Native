@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, StatusBar, View } from 'react-native';
-import { Scene, Router, Stack, Tabs } from 'react-native-router-flux';
+import { Scene, Router, Actions, Stack, Tabs } from 'react-native-router-flux';
 import { Provider } from 'mobx-react';
 import { Home, Login, Chat, Chats, Register, Settings, ChangePassword } from './src/screens';
 import { colors, languages } from 'res';
@@ -9,6 +9,7 @@ import { store } from './src/store';
 import { ChatBar, TabBar, BackButton } from './src/components/navigations';
 import DropDown from '~/components/drowdown';
 import FlashMessage from 'react-native-flash-message';
+import { MessageComponent, Alert } from '~/components';
 
 const { login, register, settings, change_password } = languages.t('app');
 
@@ -32,7 +33,7 @@ export default class App extends Component {
               tintColor={colors.headerTint}
               headerTintColor={colors.headerTint}>
               <Stack hideNavBar key="root">
-                <Stack type="replace" key="login">
+                <Stack type="reset" key="login">
                   <Scene component={Login} initial navTransparent title={login} />
                 </Stack>
 
@@ -77,7 +78,8 @@ export default class App extends Component {
           </View>
           <DropDown />
         </Provider>
-        <FlashMessage position="top" />
+        <FlashMessage MessageComponent={MessageComponent} position="top" />
+        <Alert />
       </View>
     );
   }
