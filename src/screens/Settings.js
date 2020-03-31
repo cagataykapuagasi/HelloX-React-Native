@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -26,7 +26,6 @@ const {
   },
 } = languages.t('alerts');
 const { placeholder, line1, line2, line3, deleteAc } = languages.t('settings');
-
 const data = [
   { text: line1, onPress: () => Actions.changePassword() },
   {
@@ -55,6 +54,7 @@ const Settings = props => {
   const [aboutLoading, setAboutLoading] = useState(false);
   const [photoLoading, setPhotoLoading] = useState(false);
   const [_about, setAbout] = useState(about);
+  const inputRef = useRef(null);
 
   const _deleteAccount = () => {
     showAlert({ title, text, buttons, onPress: deleteAccount });
@@ -89,14 +89,14 @@ const Settings = props => {
     });
   };
 
-  const onError = e => {
-    updateProfilePhoto(null);
-  };
+  useEffect(() => {
+    editable && inputRef.current.focus();
+  }, [editable]);
 
-  const toggleAbout = () => setEditable(!editable);
+  const openAbout = () => setEditable(true);
 
   const onEndEditing = async () => {
-    toggleAbout();
+    setEditable(false);
 
     if (_about === about) {
       return;
@@ -133,6 +133,7 @@ const Settings = props => {
         <Text style={styles.text}>{username}</Text>
         <View style={styles.aboutContainer}>
           <TextInput
+            ref={inputRef}
             numberOfLines={1}
             maxLength={15}
             value={_about}
@@ -143,10 +144,7 @@ const Settings = props => {
             placeholder={placeholder}
             placeholderTextColor={editable ? colors.black : colors.text}
           />
-          <TouchableOpacity
-            disabled={aboutLoading}
-            style={styles.aboutButton}
-            onPress={toggleAbout}>
+          <TouchableOpacity disabled={aboutLoading} style={styles.aboutButton} onPress={openAbout}>
             <LoadingIcon
               loading={aboutLoading}
               type="material"
