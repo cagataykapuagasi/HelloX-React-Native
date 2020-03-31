@@ -46,6 +46,6 @@ const styles = ScaledSheet.create({
     right: '25@s',
     top: '60@s',
     width: '150@s',
-    backgroundColor: colors.secondary,
+    backgroundColor: '#159A8B',
   },
 });

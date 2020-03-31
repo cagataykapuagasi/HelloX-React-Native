@@ -19,7 +19,6 @@ export default class App extends Component {
   componentDidMount() {
     store.init();
   }
-
   render() {
     return (
       <View style={styles.container}>

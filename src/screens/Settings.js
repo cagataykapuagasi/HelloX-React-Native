@@ -5,11 +5,10 @@ import {
   TouchableOpacity,
   ScrollView,
   Platform,
-  Alert,
   Linking,
   TextInput,
 } from 'react-native';
-import { images, languages, colors } from 'res';
+import { languages, colors } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
 import { Icon, LoadingIcon, Avatar } from '~/components';
@@ -17,7 +16,6 @@ import { Actions } from 'react-native-router-flux';
 import ImagePicker from 'react-native-image-picker';
 import { updatePhoto, updateAbout } from '~/api/User';
 import { showMessage } from 'react-native-flash-message';
-import FastImage from 'react-native-fast-image';
 import { showAlert } from '~/components/alert';
 
 const {

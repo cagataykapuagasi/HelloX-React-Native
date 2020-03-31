@@ -43,8 +43,7 @@ const styles = ScaledSheet.create({
   container: {
     justifyContent: 'center',
     height: '40@vs',
-    borderWidth: 1,
-    borderColor: colors.secondary,
+
     paddingLeft: '15@vs',
   },
   text: {

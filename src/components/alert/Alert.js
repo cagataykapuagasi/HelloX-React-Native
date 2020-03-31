@@ -31,10 +31,10 @@ export default class Alert extends Component {
   }
 
   openModal = props => {
-    this.setState({ props, visible: true });
+    this.setState({ props, visible: true, loading: false });
   };
 
-  onPress = async () => {
+  _onPress = async () => {
     const { onPress } = this.state.props;
 
     this.setState({ loading: true });
@@ -42,19 +42,25 @@ export default class Alert extends Component {
     this.closeModal();
   };
 
+  //test3@gmail.com
+
   closeModal = () => {
-    this.setState({ visible: false, loading: false });
+    this.setState({ visible: false });
   };
 
   render() {
-    const {
-      props: { title, text, buttons = { yes: '', no: '' } },
-      loading,
-      visible,
-    } = this.state;
+    const { title, text, buttons = { yes: '', no: '' } } = this.state.props;
+
+    console.log('props', this.state);
+
+    // const [visible, setVisible] = useState(false);
+    // const [loading, setLoading] = useState(false);
+
+    const { loading, visible } = this.state;
 
     return (
       <Modal
+        //ref={ref => (ref = ref)}
         isVisible={visible}
         onSwipeComplete={this.closeModal}
         onBackdropPress={this.closeModal}
@@ -67,8 +73,8 @@ export default class Alert extends Component {
           </View>
           <View style={styles.part2}>
             <Button
-              colors={['#075E54', '#075E54', colors.primary]}
-              onPress={this.onPress}
+              colors={[colors.primaryHeavy, '#096E62', '#0A7467']}
+              onPress={this._onPress}
               loading={loading}
               style={styles.button1}
               text={buttons.yes}
@@ -132,7 +138,7 @@ const styles = ScaledSheet.create({
   },
   no: {
     fontSize: '14@s',
-    color: colors.primary,
+    color: colors.primaryHeavy,
     fontWeight: 'bold',
   },
   title: {
