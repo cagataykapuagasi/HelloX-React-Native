@@ -5,7 +5,7 @@ import { ScaledSheet, verticalScale, scale } from 'react-native-size-matters';
 import Spinner from 'react-native-spinkit';
 
 const Button = props => {
-  const { onPress, loading, distance, text, colors, disabled } = props;
+  const { onPress, loading, distance, text, colors, disabled, style } = props;
   const coord = props.horizontal ? { start: { x: 0, y: 0 }, end: { x: 1, y: 0 } } : null;
 
   return (
@@ -16,7 +16,7 @@ const Button = props => {
         opacity: disabled ? 0.8 : 1,
       }}
       onPress={onPress}>
-      <LinearGradient {...coord} style={styles.container} {...props}>
+      <LinearGradient {...coord} style={[styles.container, style]} {...props}>
         {loading ? (
           <Spinner color="white" size={scale(20)} type="ChasingDots" />
         ) : (
@@ -30,8 +30,6 @@ const Button = props => {
 export default Button;
 
 Button.defaultProps = {
-  width: '100%',
-  height: 50,
   distance: 10,
 };
 
@@ -40,6 +38,8 @@ const styles = ScaledSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: '5@s',
+    width: '100%',
+    height: 50,
   },
   text: {
     color: 'white',

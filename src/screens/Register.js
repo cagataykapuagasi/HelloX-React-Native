@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ScrollView, Dimensions } from 'react-native';
+import React from 'react';
+import { ScrollView, Dimensions, View, TouchableOpacity, Text } from 'react-native';
 import { colors, languages } from 'res';
 import { inject, observer } from 'mobx-react';
 import { ScaledSheet } from 'react-native-size-matters';
@@ -23,6 +23,7 @@ const initialValues = {
 const {
   labels: { username, email, password, password_confirmation },
   button,
+  login,
 } = languages.t('register');
 
 const Register = props => {
@@ -52,6 +53,12 @@ const Register = props => {
               <TextInput name="email" label={email} />
               <TextInput name="password" label={password} />
               <TextInput name="password_confirmation" label={password_confirmation} />
+
+              <View style={styles.register}>
+                <TouchableOpacity onPress={Actions.login}>
+                  <Text style={styles.registerText}>{login}</Text>
+                </TouchableOpacity>
+              </View>
 
               <Button
                 horizontal
@@ -91,5 +98,15 @@ const styles = ScaledSheet.create({
   forms: {
     height,
     justifyContent: 'center',
+  },
+  register: {
+    top: '5@s',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  registerText: {
+    fontSize: '11@s',
+    fontWeight: 'bold',
+    color: 'white',
   },
 });

@@ -21,7 +21,6 @@ const Login = props => {
   const login = (form, { setErrors, setSubmitting }) => {
     const {
       userStore: { setUser },
-      chatStore: { init },
     } = props.store;
     Auth.login(form)
       .then(res => {

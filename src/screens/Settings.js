@@ -18,6 +18,7 @@ import ImagePicker from 'react-native-image-picker';
 import { updatePhoto, updateAbout } from '~/api/User';
 import { showMessage } from 'react-native-flash-message';
 import FastImage from 'react-native-fast-image';
+import { showAlert } from '~/components/alert';
 
 const {
   settings: {
@@ -56,13 +57,7 @@ const Settings = props => {
   const [_about, setAbout] = useState(about);
 
   const _deleteAccount = () => {
-    Alert.alert(title, text, [
-      {
-        text: buttons.yes,
-        onPress: () => deleteAccount(),
-      },
-      { text: buttons.no, style: 'cancel' },
-    ]);
+    showAlert({ title, text, buttons, onPress: deleteAccount });
   };
 
   const selectImage = () => {

@@ -19,6 +19,7 @@ export default {
     },
     button: 'Üye Ol',
     errors: { username: 'Kullanıcı adı zaten alınmış.', email: 'E-posta zaten alınmış.' },
+    login: 'Giriş',
   },
   change_password: {
     labels: {
@@ -65,7 +66,7 @@ export default {
       delete: {
         title: 'Hesabı sil',
         text: 'Hesabınız silinecek',
-        buttons: { yes: 'Evet', no: 'Hayır' },
+        buttons: { yes: 'Sil', no: 'Vazgeç' },
       },
       photo: 'Bir şeyler yanlış gitti. Fotoğrafınızı yükleyemedik.',
       about: 'Bir şeyler yanlış gitti. Durumunuzu güncelleyemedik.',
@@ -78,7 +79,7 @@ export default {
     logOut: {
       title: 'Çıkış Yap',
       text: 'Mesajlarınız silinecek',
-      buttons: { yes: 'Evet', no: 'Hayır' },
+      buttons: { yes: 'Çıkış', no: 'Vazgeç' },
     },
   },
 };

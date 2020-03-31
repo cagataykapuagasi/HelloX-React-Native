@@ -19,6 +19,7 @@ export default {
     },
     button: 'Register',
     errors: { username: 'Username is already taken.', email: 'Email is already taken.' },
+    login: 'Login',
   },
   change_password: {
     labels: {
@@ -65,7 +66,7 @@ export default {
       delete: {
         title: 'Delete account',
         text: 'Your account will be deleted',
-        buttons: { yes: 'Yes', no: 'No' },
+        buttons: { yes: 'Delete', no: 'Cancel' },
       },
       photo: "Something went wrong. We couldn't upload your photo.",
       about: "Something went wrong. We couldn't update your about.",
@@ -78,7 +79,7 @@ export default {
     logOut: {
       title: 'Sign out',
       text: 'Your messages will be deleted',
-      buttons: { yes: 'Yes', no: 'No' },
+      buttons: { yes: 'Sign out', no: 'Cancel' },
     },
   },
 };
