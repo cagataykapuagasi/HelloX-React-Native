@@ -19,10 +19,11 @@ export default class App extends Component {
   componentDidMount() {
     store.init();
   }
+
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar backgroundColor={colors.primary} barStyle="light-content" />
+        <StatusBar barStyle="light-content" />
         <Provider store={store}>
           <View onTouchStart={store.navStore.hideDropDown} style={styles.container}>
             <Router
