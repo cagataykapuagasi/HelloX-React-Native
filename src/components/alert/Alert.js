@@ -1,9 +1,8 @@
-import React, { useState, useEffect, Component } from 'react';
-import { View, Text, TouchableOpacity, SafeAreaView, Dimensions } from 'react-native';
-import { Icon, Avatar, Button } from '~/components';
+import React, { Component } from 'react';
+import { View, Text, TouchableOpacity, Dimensions } from 'react-native';
+import { Button } from '~/components';
 import { ScaledSheet } from 'react-native-size-matters';
 import { colors } from 'res';
-import { hideMessage } from 'react-native-flash-message';
 import Modal from 'react-native-modal';
 import AlertManager from './AlertManager';
 
@@ -17,8 +16,6 @@ export function showAlert(props) {
   }
 }
 
-export function register() {}
-
 export default class Alert extends Component {
   state = {
     visible: false,
@@ -31,7 +28,7 @@ export default class Alert extends Component {
   }
 
   openModal = props => {
-    this.setState({ props, visible: true, loading: false });
+    this.setState({ props, visible: true });
   };
 
   _onPress = async () => {
@@ -42,25 +39,19 @@ export default class Alert extends Component {
     this.closeModal();
   };
 
-  //test3@gmail.com
-
   closeModal = () => {
-    this.setState({ visible: false });
+    this.setState({ visible: false, loading: false });
   };
 
   render() {
-    const { title, text, buttons = { yes: '', no: '' } } = this.state.props;
-
-    console.log('props', this.state);
-
-    // const [visible, setVisible] = useState(false);
-    // const [loading, setLoading] = useState(false);
-
-    const { loading, visible } = this.state;
+    const {
+      props: { title, text, buttons = { yes: '', no: '' } },
+      loading,
+      visible,
+    } = this.state;
 
     return (
       <Modal
-        //ref={ref => (ref = ref)}
         isVisible={visible}
         onSwipeComplete={this.closeModal}
         onBackdropPress={this.closeModal}
