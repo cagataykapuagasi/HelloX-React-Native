@@ -2,20 +2,24 @@ import { create } from 'apisauce';
 import { Platform } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { languages } from 'res';
+import { BASE_URL } from 'react-native-dotenv';
+import { refreshToken } from '../store/userStore';
 
 const { clientMessage } = languages.t('alerts');
 
 let token = null;
+let refresh_token = null;
 const client = create({
-  baseURL: 'https://hellox.herokuapp.com',
+  baseURL: BASE_URL,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   },
 });
 
-export function setToken(newToken) {
+export function setToken({ token: newToken, refresh_token: refreshToken }) {
   token = newToken;
+  refresh_token = refreshToken;
 }
 
 /**
@@ -29,10 +33,18 @@ export function request(method, path, params = {}, customHeaders = {}) {
       ...headers,
       ...customHeaders,
     },
-  }).then(response => {
+  }).then((response) => {
+    console.log(response);
     if (response.ok) {
       return Promise.resolve(response.data);
     } else {
+      if (response.status === 401) {
+        return client['post']('auth/refresh_token', { refresh_token }).then((res) => {
+          refreshToken(res);
+          return request(method, path, params, customHeaders);
+        });
+      }
+
       if (response.problem === 'NETWORK_ERROR') {
         showMessage({
           message: clientMessage,

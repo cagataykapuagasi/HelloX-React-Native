@@ -6,7 +6,7 @@ import { setToken } from '../api/Client';
 import { showMessage } from 'react-native-flash-message';
 import { languages } from 'res';
 import firebase from 'react-native-firebase';
-import { Alert } from 'react-native';
+import { showAlert } from '~/components/alert';
 
 const {
   userStore,
@@ -22,16 +22,15 @@ export default class UserStore {
 
   @action
   init = async () => {
-    const { profile, token } = JSON.parse(await AsyncStorage.getItem('user'));
+    const { profile, token, refresh_token } = JSON.parse(await AsyncStorage.getItem('user'));
+    setToken({ token, refresh_token });
 
     if (profile) {
-      setToken(token);
-
       User.getUser()
-        .then(({ user }) => {
-          this.setUser({ user, token });
+        .then((user) => {
+          this.setUser({ user, token, refresh_token });
         })
-        .catch(e => {
+        .catch((e) => {
           this.user.profile = profile;
           this.user.token = token;
         });
@@ -44,22 +43,25 @@ export default class UserStore {
 
   @action
   initWithNotification = async () => {
-    const { profile, token } = JSON.parse(await AsyncStorage.getItem('user'));
+    const { profile, token, refresh_token } = JSON.parse(await AsyncStorage.getItem('user'));
+    setToken({ token, refresh_token });
     this.user.profile = profile;
     this.user.token = token;
+    this.store.chatStore.init(token);
+    this.store.notificationStore.init();
   };
 
   @action
-  setUser = async ({ user, token }) => {
+  setUser = async ({ user, token, refresh_token }) => {
     const { chatStore, notificationStore } = this.store;
     this.user.profile = user;
     this.user.token = token;
-    setToken(token);
+    this.user.refresh_token = refresh_token;
+    setToken({ token, refresh_token });
 
-    const { language } = this.user.profile;
     const { locale } = languages;
-    if (language !== locale) {
-      User.updateLanguage(locale).then(r => (language = locale));
+    if (user.language !== locale) {
+      User.updateLanguage(locale).then((r) => (this.user.profile.language = locale));
     }
 
     chatStore.init(token);
@@ -67,22 +69,31 @@ export default class UserStore {
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
 
+  refreshToken = async (res) => {
+    if (res.ok && res.data) {
+      const { token, refresh_token } = res.data;
+      this.user.token = token;
+      this.user.refresh_token = refresh_token;
+      setToken({ token, refresh_token });
+      await AsyncStorage.setItem('user', JSON.stringify(this.user));
+    } else {
+      this._logOut();
+    }
+  };
+
   @action
-  updateProfilePhoto = url => {
+  updateProfilePhoto = (url) => {
     this.user.profile.profile_photo = url;
   };
 
   @action
-  updateProfileAbout = about => {
+  updateProfileAbout = (about) => {
     this.user.profile.about = about;
   };
 
-  @action
-  deleteAccount = () => {
-    User.deleteAccount()
-      .then(() => {
-        this.logOut();
-      })
+  deleteAccount = async () => {
+    await User.deleteAccount()
+      .then(this._logOut)
       .catch(() => {
         showMessage({
           message: userStore,
@@ -91,25 +102,32 @@ export default class UserStore {
       });
   };
 
-  logOut = async () => {
-    Alert.alert(title, text, [
-      {
-        text: buttons.yes,
-        onPress: () => this._logOut(),
-      },
-      { text: buttons.no, style: 'cancel' },
-    ]);
+  logOut = () => {
+    showAlert({
+      title,
+      text,
+      buttons,
+      onPress: this._logOut,
+    });
   };
 
   @action
   _logOut = async () => {
-    const { disconnect, deleteRooms } = this.store.chatStore;
-    await AsyncStorage.removeItem('user');
-    await firebase.messaging().deleteToken();
-    Actions.login();
-    this.profile = null;
-    this.token = null;
-    deleteRooms();
-    disconnect();
+    try {
+      await AsyncStorage.removeItem('user');
+      await firebase.messaging().deleteToken();
+      this.profile = null;
+      this.token = null;
+      const { disconnect, deleteRooms } = this.store.chatStore;
+      deleteRooms();
+      disconnect();
+    } catch (error) {
+    } finally {
+      Actions.login();
+    }
   };
+}
+
+export function refreshToken(res) {
+  return new UserStore().refreshToken(res);
 }
