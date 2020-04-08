@@ -13,14 +13,14 @@ export default class chatStore {
   currentUserStatus = null;
   @observable
   connected = false;
-
+  @observable
+  currentUser = null;
   constructor(store) {
     this.store = store;
   }
 
-  init = async token => {
+  init = async (token) => {
     await this.loadRooms();
-
     _io = await io('https://hellox.herokuapp.com/', {
       query: {
         token,
@@ -44,7 +44,7 @@ export default class chatStore {
       });
     });
 
-    _io.on('disconnect', e => {
+    _io.on('disconnect', (e) => {
       this.connected = false;
     });
   };
@@ -54,18 +54,18 @@ export default class chatStore {
   };
 
   @action
-  subscribeToUser = id => {
+  subscribeToUser = (id) => {
     if (!this.connected || !socket) {
       return;
     }
     socket.emit('subscribe', id);
 
-    _io.on('subscribelisten', status => {
+    _io.on('subscribelisten', (status) => {
       this.currentUserStatus = status;
     });
   };
 
-  unSubscribeToUser = id => {
+  unSubscribeToUser = (id) => {
     if (!this.connected || !socket) {
       return;
     }
@@ -81,7 +81,7 @@ export default class chatStore {
     }
   };
 
-  sendMessage = data => {
+  sendMessage = (data) => {
     const { username, id } = this.store.userStore.user.profile;
     const newMessage = {
       ...data,
@@ -119,25 +119,33 @@ export default class chatStore {
   };
 
   @action
-  closeRoom = id => {
+  closeRoom = (id) => {
     if (this.rooms[id] && !this.rooms[id].messages.length) {
       delete this.rooms[id];
     }
 
+    this.currentUser = null;
     this.saveRooms();
   };
 
   @action
-  deleteRoom = id => {
+  deleteRoom = (id) => {
     Actions.pop();
     delete this.rooms[id];
     this.saveRooms();
   };
 
   @action
+  deleteRooms = async () => {
+    await AsyncStorage.removeItem('rooms');
+    this.rooms = {};
+  };
+
+  @action
   getRoom = ({ username, id, profile_photo }) => {
     const roomId = id;
     let room = this.rooms[roomId];
+    this.currentUser = username;
 
     if (room) {
       room.unRead = 0;
