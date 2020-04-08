@@ -69,6 +69,7 @@ export default class Chat extends Component {
     if (message.trim().length > 0) {
       sendMessage({ recipientId: id, message, profile_photo });
       this.setState({ message: '' });
+      this.animate(40);
     }
   };
 
@@ -106,6 +107,10 @@ export default class Chat extends Component {
       return;
     }
 
+    if (firstContentHeight === height) {
+      return;
+    }
+
     if (height > currentContentHeight && height / firstContentHeight < 6) {
       this.contentHeight += 20;
       this.animate(this.contentHeight);
@@ -117,7 +122,7 @@ export default class Chat extends Component {
     this.currentContentHeight = height;
   };
 
-  animate = contentHeight =>
+  animate = (contentHeight) =>
     Animated.timing(this.height, {
       toValue: scale(contentHeight),
       duration: 200,
@@ -163,7 +168,7 @@ export default class Chat extends Component {
             <Animated.View style={[styles.inputContainer, { height }]}>
               <TextInput
                 value={message}
-                onChangeText={message => this.setState({ message })}
+                onChangeText={(message) => this.setState({ message })}
                 style={styles.input}
                 placeholder={connected ? placeholder : placeholderError}
                 editable={connected}

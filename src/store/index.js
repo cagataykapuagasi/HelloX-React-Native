@@ -3,10 +3,9 @@ import chatSore from './chatStore';
 import navStore from './navStore';
 import notificationStore from './notificationStore';
 import { observable, action } from 'mobx';
-import messaging from '@react-native-firebase/messaging';
-import { Platform } from 'react-native';
 import RNBootSplash from 'react-native-bootsplash';
 import { Actions } from 'react-native-router-flux';
+import firebase from 'react-native-firebase';
 
 export class RootStore {
   @observable storeLoaded = false;
@@ -18,20 +17,20 @@ export class RootStore {
     this.notificationStore = new notificationStore(this);
   }
 
-  initIosFirebase = async () => {
-    if (Platform.OS === 'ios') {
-      await messaging().registerForRemoteNotifications();
-      await messaging().requestPermission();
-    }
-  };
-
   @action init = async () => {
+    const notificationOpen = await firebase.notifications().getInitialNotification();
+    if (notificationOpen) {
+      const { user } = notificationOpen.notification._data;
+      this.userStore.initWithNotification();
+      Actions.replace('home');
+      Actions.chat({ item: JSON.parse(user) });
+      RNBootSplash.hide();
+      return;
+    }
+
     this.userStore
       .init()
-      .then(async () => {
-        this.initIosFirebase();
-        Actions.replace('home');
-      })
+      .then(Actions.home)
       .finally(() => RNBootSplash.hide({ duration: 250 }));
   };
 }

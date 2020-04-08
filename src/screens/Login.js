@@ -17,13 +17,13 @@ const {
   register,
 } = languages.t('login');
 
-const Login = props => {
+const Login = (props) => {
   const login = (form, { setErrors, setSubmitting }) => {
     const {
       userStore: { setUser },
     } = props.store;
     Auth.login(form)
-      .then(res => {
+      .then((res) => {
         setUser(res);
         Actions.home();
       })

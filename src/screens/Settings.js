@@ -208,7 +208,6 @@ const styles = ScaledSheet.create({
     marginTop: '10@s',
     color: colors.secondary,
   },
-
   menuContainer: {
     marginTop: '30@s',
     width: '100%',
