@@ -1,5 +1,4 @@
 import { create } from 'apisauce';
-import { Platform } from 'react-native';
 import { showMessage } from 'react-native-flash-message';
 import { languages } from 'res';
 import { BASE_URL } from 'react-native-dotenv';

@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Animated, SafeAreaView } from 'react-native';
+import { View, TouchableOpacity, Animated, SafeAreaView } from 'react-native';
 import { ScaledSheet, scale } from 'react-native-size-matters';
 import { Icon, Avatar } from '../';
 import { languages } from 'res';
@@ -8,7 +8,7 @@ import { inject, observer } from 'mobx-react';
 
 const { dropdown1, online, offline } = languages.t('chatBar');
 
-const ChatBar = props => {
+const ChatBar = (props) => {
   const {
     item: { username, profile_photo, id },
     store: {
