@@ -32,15 +32,16 @@ export function request(method, path, params = {}, customHeaders = {}) {
       ...headers,
       ...customHeaders,
     },
-  }).then((response) => {
-    console.log(response);
+  }).then(response => {
     if (response.ok) {
       return Promise.resolve(response.data);
     } else {
       if (response.status === 401) {
-        return client['post']('auth/refresh_token', { refresh_token }).then((res) => {
+        return client['post']('auth/refresh_token', { refresh_token }).then(async res => {
           refreshToken(res);
-          return request(method, path, params, customHeaders);
+          if (res.ok) {
+            return request(method, path, params, customHeaders);
+          }
         });
       }
 

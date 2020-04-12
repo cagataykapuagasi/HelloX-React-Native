@@ -30,7 +30,6 @@ const Register = props => {
   const register = ({ password_confirmation, ...form }, { setErrors, setSubmitting }) => {
     const {
       userStore: { setUser },
-      chatStore: { init },
     } = props.store;
     Auth.register(form)
       .then(res => {

@@ -23,17 +23,17 @@ export default class UserStore {
   @action
   init = async () => {
     const { profile, token, refresh_token } = JSON.parse(await AsyncStorage.getItem('user'));
-    setToken({ token, refresh_token });
 
     if (profile) {
-      User.getUser()
-        .then((user) => {
-          this.setUser({ user, token, refresh_token });
-        })
-        .catch((e) => {
-          this.user.profile = profile;
-          this.user.token = token;
-        });
+      setToken({ token, refresh_token });
+      this.user.refresh_token = refresh_token;
+      let user = profile;
+
+      const data = await User.getUser();
+      if (data) {
+        user = data;
+      }
+      this.setUser({ user, token });
 
       return Promise.resolve();
     }
@@ -55,13 +55,16 @@ export default class UserStore {
   setUser = async ({ user, token, refresh_token }) => {
     const { chatStore, notificationStore } = this.store;
     this.user.profile = user;
-    this.user.token = token;
-    this.user.refresh_token = refresh_token;
-    setToken({ token, refresh_token });
+
+    if (refresh_token) {
+      this.user.token = token;
+      this.user.refresh_token = refresh_token;
+      setToken({ token, refresh_token });
+    }
 
     const { locale } = languages;
     if (user.language !== locale) {
-      User.updateLanguage(locale).then((r) => (this.user.profile.language = locale));
+      User.updateLanguage(locale).then(r => (this.user.profile.language = locale));
     }
 
     chatStore.init(token);
@@ -69,12 +72,12 @@ export default class UserStore {
     await AsyncStorage.setItem('user', JSON.stringify(this.user));
   };
 
-  refreshToken = async (res) => {
+  refreshToken = async res => {
     if (res.ok && res.data) {
       const { token, refresh_token } = res.data;
+      setToken({ token, refresh_token });
       this.user.token = token;
       this.user.refresh_token = refresh_token;
-      setToken({ token, refresh_token });
       await AsyncStorage.setItem('user', JSON.stringify(this.user));
     } else {
       this._logOut();
@@ -82,12 +85,12 @@ export default class UserStore {
   };
 
   @action
-  updateProfilePhoto = (url) => {
+  updateProfilePhoto = url => {
     this.user.profile.profile_photo = url;
   };
 
   @action
-  updateProfileAbout = (about) => {
+  updateProfileAbout = about => {
     this.user.profile.about = about;
   };
 
