@@ -10,6 +10,7 @@ import { showAlert } from '~/components/alert';
 
 const {
   userStore,
+  clientMessage,
   logOut: { title, text, buttons },
 } = languages.t('alerts');
 
@@ -81,6 +82,10 @@ export default class UserStore {
       await AsyncStorage.setItem('user', JSON.stringify(this.user));
     } else {
       this._logOut();
+      showMessage({
+        message: clientMessage,
+        type: 'danger',
+      });
     }
   };
 
