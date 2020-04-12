@@ -8,7 +8,7 @@ import { hideMessage } from 'react-native-flash-message';
 const MessageComponent = ({ message: { user, message, onPress, type } }) => {
   const _onPress = () => {
     hideMessage();
-    onPress();
+    onPress && onPress();
   };
 
   const backgroundColor =
