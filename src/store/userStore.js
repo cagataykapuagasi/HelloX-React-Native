@@ -48,6 +48,7 @@ export default class UserStore {
     setToken({ token, refresh_token });
     this.user.profile = profile;
     this.user.token = token;
+    this.user.refresh_token = refresh_token;
     this.store.chatStore.init(token);
     this.store.notificationStore.init();
   };
