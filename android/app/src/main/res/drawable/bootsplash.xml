@@ -4,6 +4,18 @@
     <!-- the background color. it can be a system color or a custom one defined in colors.xml -->
     <item android:drawable="@color/splash" />
 
+    <item>
+        <shape android:shape="rectangle" >
+            <gradient
+                android:angle="90"
+                android:startColor="#159A8B" 
+                android:centerColor="#075E54"
+                android:endColor="#128C7E"
+                />
+        </shape>
+    </item>
+
+
     <item android:gravity="center">
         <!-- the app logo, centered horizontally and vertically -->
         <bitmap android:src="@drawable/logo" />
